@@ -1,0 +1,19 @@
+{application, recon_web,
+ [
+  {description, "a web tool to look into VM using recon and cowboy"},
+  {vsn, "1.0.0"},
+  {registered, [recon_web_sup]},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  lager,
+                  recon,
+                  jsx,
+                  cowboy
+                 ]},
+  {mod, { recon_web_app, []}},
+  {env, [
+         %%{ip,{10,142,35,165}},%% default :localhost,better using nginx to proxypass
+         {port,8080}
+        ]}
+ ]}.

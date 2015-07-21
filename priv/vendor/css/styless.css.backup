@@ -1,0 +1,47 @@
+
+#browser #location-bar {
+    margin: 10px 0;
+}
+#browser #location-bar .address {
+    border: 1px solid #999;
+    margin: 0;
+    padding: 4px;
+}
+#browser #headers-bar {
+    border: 1px solid #888;
+    padding: 5px;
+}
+#request-headers {
+    border: 0 none;
+    box-shadow: none;
+    height: 40px;
+    margin-bottom: 0;
+    outline: medium none;
+    padding: 0;
+    resize: vertical;
+    width: 100%;
+}
+.inspector {
+    height: 100%;
+}
+.documentation {
+    height: 100%;
+}
+.documentation iframe {
+    height: 100%;
+    width: 100%;
+}
+.modal input, .modal textarea {
+    width: 90%;
+}
+.modal textarea {
+    height: 100px;
+}
+.links .btn {
+    font-size: 12px;
+    line-height: 14px;
+    padding: 2px 5px;
+}
+body table.table {
+    font-size: 11px;
+}

@@ -1,0 +1,260 @@
+	<!DOCTYPE html>
+	<html>
+	<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <title>Recon Erlang Node Status </title>
+   <link href="/vendor/css/bootstrap.css" rel="stylesheet">
+   <link rel="stylesheet" type="text/css" media="screen" href="/vendor/css/css-table.css" />
+
+   <style>
+   body {
+     padding:20px;
+     font-size:15px;
+     margin:auto;
+     background-color: transparent;
+   }
+
+   #title{
+    color:green;
+    font-size:18px;
+    font-style: normal;
+    font-weight: 10px;
+  }
+  .scheduler {
+    float:left;
+  }
+  #byte{
+    clear:both;
+    float:none;
+  }
+  .count {
+    float:left;
+  }
+  .clear{
+    clear:both;
+    margin-top: 10px;
+  }
+  #port_summary{
+    color: green;
+
+  }
+  table{ border-collapse:collapse; margin: 10px,10px,10px,10px }
+  td{ border:2px solid green; margin:10px,10px,10px,10px}
+  button{
+    margin: auto;
+  }
+  #console {
+   height: 400px;
+   clear:both;
+   overflow: auto;
+   margin-top:220px;
+ }
+ .connect-msg {color:green;}
+ .disconnect-msg {color:red;}
+ .send-msg {color:#888}
+ </style>
+ <!--this js load order is very import ,be careful-->
+ <script src="/js/socket.io.js"></script>
+ <script src="/js/moment.js"></script>
+ <script src="/js/jquery-1.7.2.min.js"></script>
+ <script src="/js/style-table.js"></script>
+ <script src="/js/highcharts.js"></script>
+ <script src="/js/highcharts-more.js"></script>
+ <script src="/js/solid-gauge.js"></script>
+ <script src="/js/recon_web.js"></script>
+</head>
+
+<body>
+  <div class="row-fluid section">
+    <!-- block -->
+    <div class="block">
+      <div class="navbar navbar-inner block-header">
+        <div class="muted pull-left" id= "title">Erlang</div>
+      </div>
+      <div id="process" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+      <div id="memory" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+      <div id="byte" class = 'count' style="min-width: 310px; height: 200px; margin: 0 auto"></div>
+      <div id="memory_count" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
+      <div id="bin_memory_count" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
+      <div id="reduction_count" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
+      <div id="total_heap_size_count" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
+
+      <div class="clear"> </div>
+      <div id="port_summary"  style="min-width: 512px; height: 50px; margin: 0 auto">port_summary</div>
+
+      <div id="inet_sent_cnt" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
+      <div id="inet_recv_cnt" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
+      <div id="inet_sent_oct" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
+      <div id="inet_recv_oct" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
+      
+      <div id="console" class="well"> </div>
+      <form class="well form-inline" onsubmit="return false;">
+       <input id="msg" class="input-xlarge" type="text" placeholder="Type something..."/>
+       <button type="button" onClick="sendMessage()" class="btn">Send</button>
+       <button type="button" onClick="sendDisconnect()" class="btn">Disconnect</button>
+ </form>
+
+ <!-- System Table info -->
+ <table >
+  <button disabled="disabled">System Info</button>
+  <thead>
+    <tr>
+      <th scope="col" >System</th>
+      <th scope="col" >Status</th>
+      <th scope="col" >System</th>
+      <th scope="col" >Status</th>
+      <th scope="col" >System</th>
+      <th scope="col" >Status</th>
+    </tr>                  
+  </thead>
+
+  <tbody>
+    <tr>
+      <td >debug_compiled</td>
+      <td id = "debug_compiled">false</td>
+      <td>dist</td>
+      <td id = "dist">"node:'zhongwencool@zhongwen'"</td>
+      <td>dynamic_trace_probes</td>
+      <td id = "dynamic_trace_probes">true</td>
+      <tr>
+        <td>"kernel_poll"</td>
+        <td id="kernel_poll">false</td>
+        <td>driver_version</td>
+        <td id = "driver_version">3.1</td>
+        <td>dynamic_trace</td>
+        <td id = "dynamic_trace">dtrace</td>
+      </tr>
+
+      <tr>
+        <td>elib_malloc</td>
+        <td id = "elib_malloc">false</td>
+        <td>ets_limit</td>
+        <td id = "ets_limit">2053</td>
+        <td>garbage_collection:min_heap_size</td>
+        <td id = "garbage_collection_min_heap_size">233</td>
+      </tr>
+      <tr>
+        <td>threads</td>
+        <td id = "threads">true</td>
+        <td>garbage_collection:min_bin_vheap_size</td>
+        <td id = "garbage_collection_min_bin_vheap_size">46422</td>
+        <td>modified_timing_level</td>
+        <td id = "modified_timing_level">"undefined"</td>              
+      </tr>
+
+      <tr>
+        <td>min_heap_size</td>
+        <td id = "min_heap_size">233</td>
+        <td>min_bin_vheap_size</td>
+        <td id = "min_bin_vheap_size">46422</td>
+        <td>garbage_collection:fullsweep_after</td>
+        <td id = "garbage_collection_fullsweep_after">65535</td>
+      </tr>
+      <tr>
+        <td>logical_processors</td>
+        <td id = "logical_processors">4</td>
+        <td>machine</td>
+        <td id = "machine">"BEAM"</td>
+        <td>multi_scheduling</td>
+        <td id = "multi_scheduling">"enabled"</td>
+      </tr>
+      <tr>
+        <td>heap_type</td>
+        <td id = "heap_type">"private"</td>
+        <td>dist_buf_busy_limit</td>
+        <td id = "dist_buf_busy_limit">1048576</td>
+        <td>process_limit</td>
+        <td id = "process_limit">262144</td>
+      </tr>
+
+      <tr>
+        <td>multi_scheduling_blockers</td>
+        <td id = "multi_scheduling_blockers">4</td>
+        <td>scheduler_bind_typeun</td>
+        <td id = "scheduler_bind_typeun">"unbound"</td>
+        <td>port_limit</td>
+        <td id = "port_limit">65535</td>
+      </tr>
+
+      <tr>
+        <td>fullsweep_after</td>
+        <td id = "fullsweep_after">65535</td>
+        <td>system_architecture</td>
+        <td id = "system_architecture">"x86_64-apple-darwin14.0.0"</td>
+        <td>update_cpu_info</td>
+        <td id = "update_cpu_info">"unchanged"</td>
+      </tr>                                
+      <tr>
+        <td>thread_pool_size</td>
+        <td id = "thread_pool_size">10</td>
+        <td>trace_control_word</td>
+        <td id = "trace_control_word">0</td>
+        <td>version</td>
+        <td id = "version">6.3</td>              
+      </tr>         
+
+      <tr scope="row">
+        <td>bulid_type</td>
+        <td id = "bulid_type">"otp"</td>
+        <td>c_compiler_usergnuc</td>
+        <td id = "c_compiler_usergnuc">"Major:4 Minor:2 Patch:1"</td>
+        <td>compat_rel</td>
+        <td id = "compat_rel">17</td>
+      </tr>                       
+
+    </tbody>
+  </table>
+  <table class="pure-table">              
+    <thead>
+      <tr>
+        <th scope="col" >System</th>
+        <th scope="col" >Status</th>
+        <th scope="col" >System</th>
+        <th scope="col" >Status</th>
+        <th scope="col" >System</th>
+        <th scope="col" >Status</th>
+      </tr>
+      <button disabled="disabled">erlang:system_info(check_io). </button>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>name</td>
+        <td id = "check_io_name">erts_poll</td>
+        <td>primary</td>
+        <td id = "check_io_primary">"select"</td>
+        <td>total_poll_set_size</td>
+        <td id = "check_io_total_poll_set_size">6</td>
+      </tr>
+
+      <tr >
+        <td>fallback</td>
+        <td id = "check_io_fallback">false</td>
+        <td>kernel_poll</td>
+        <td id = "check_io_kernel_poll">false</td>
+        <td>batch_updates</td>
+        <td id = "check_io_batch_updates">false</td>              
+      </tr>
+
+      <tr >
+        <td>lazy_updates</td>
+        <td id = "check_io_lazy_updates">true</td>
+        <td>concurrent_updates</td>
+        <td id = "check_io_concurrent_updates">false</td>
+        <td>memory_size</td>
+        <td id = "check_io_memory_size">12128</td>
+      </tr>
+
+      <tr >
+        <td>pending_updates</td>
+        <td id = "check_io_pending_updates">1</td>
+        <td>max_fds</td>
+        <td id= "check_io_max_fds">256</td>
+        <td>active_fds</td>
+        <td id = "check_io_active_fds">1</td>
+      </tr>
+    </tbody>
+  </table>              
+</body>
+
+</html>
