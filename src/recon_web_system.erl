@@ -43,7 +43,7 @@ system_to_prop({min_heap_size, {_, Size}}) ->
 system_to_prop({min_bin_vheap_size, {_, Size}}) ->
     [{min_bin_vheap_size, Size}];
 system_to_prop({multi_scheduling_blockers, Blockers}) ->
-    [{multi_scheduling_blockers, [recon_web_lib:pid_to_binary(Blocker) || Blocker <- Blockers]}];
+    [{multi_scheduling_blockers, [pid_to_binary(Blocker) || Blocker <- Blockers]}];
 system_to_prop({scheduler_bindings, Bindings}) ->
     [{scheduler_bindings, tuple_to_list(Bindings)}];
 system_to_prop({Key, Value}) ->
@@ -55,3 +55,6 @@ to_binary(Value) when is_atom(Value) ->
     list_to_binary(atom_to_list(Value));
 to_binary(Value)when is_integer(Value) ->
     integer_to_binary(Value).
+
+pid_to_binary(Pid) ->
+    list_to_binary(pid_to_list(Pid)).

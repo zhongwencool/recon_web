@@ -30,6 +30,9 @@
   .count {
     float:left;
   }
+  .pie {
+    float:left;
+  }
   .clear{
     clear:both;
     margin-top: 10px;
@@ -38,6 +41,66 @@
     color: green;
 
   }
+  header{
+    display: block;
+    margin: 0 auto;
+    padding: 0 0 0 0;
+    float:left;
+  }
+  .body {clear: both; margin: 0 auto; width: 1000px;}
+img.right, figure.right {float: right; margin: 0 0 2em 2em;}
+img.left, figure.left {float: left; margin: 0 2em 2em 0;}
+
+  /* Main Nav */
+  #banner nav {
+    background: #000305;
+    font-size: 1.143em;
+    height: 40px;
+    line-height: 30px;
+    margin: 0 auto 2em auto;
+    padding: 0;
+    text-align: center;
+    width: 1024px;
+    
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+  }
+  
+  #banner nav ul {list-style: none; margin: 0 auto; width: 1000px;}
+  #banner nav li {float: left; display: inline; margin: 0;}
+  
+  #banner nav a:link, #banner nav a:visited {
+    color: #fff;
+    display: inline-block;
+    height: 30px;
+    padding: 5px 1.5em;
+    text-decoration: none;
+  }
+  #banner nav a:hover, #banner nav a:active,
+  #banner nav .active a:link, #banner nav .active a:visited {
+    background: #C74451;
+    color: #fff;
+    text-shadow: none !important;
+  }
+
+  #banner nav li:first-child a {
+    border-top-left-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -webkit-border-top-left-radius: 5px;
+    
+    border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+  }
+    #circle{
+    width: 35px;
+    height:35px;
+    border-radius: 12.5px;
+    float: right;
+    margin-top:0.5em;
+  }
+
   table{ border-collapse:collapse; margin: 10px,10px,10px,10px }
   td{ border:2px solid green; margin:10px,10px,10px,10px}
   button{
@@ -65,6 +128,18 @@
 </head>
 
 <body>
+   <header id="banner" class="body">    
+    <nav><ul>
+      <li ><a href="#process">Process</a></li>
+      <li ><a href="#memory">Memory</a></li>
+      <li ><a href="#scheduler_usage1">Scheduler</a></li>
+      <li ><a href="#port_summary">Port</a></li>
+      <li ><a href="#system">System</a></li>
+    </ul></nav>
+  </header><!-- /#banner -->
+  <button id = "circle" type = "button" disabled="disabled"  title="Login Count"> 1</button>
+  <div class = clear></div>        
+
   <div class="row-fluid section">
     <!-- block -->
     <div class="block">
@@ -74,10 +149,10 @@
       <div id="process" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
       <div id="memory" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
       <div id="byte" class = 'count' style="min-width: 310px; height: 200px; margin: 0 auto"></div>
-      <div id="memory_count" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
-      <div id="bin_memory_count" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
-      <div id="reduction_count" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
-      <div id="total_heap_size_count" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
+      <div id="memory_count" class = 'count' style="min-width: 512px; height: 300px; margin: 0 auto"></div>
+      <div id="bin_memory_count" class = 'count' style="min-width: 512px; height: 300px; margin: 0 auto"></div>
+      <div id="reduction_count" class = 'count' style="min-width: 512px; height: 300px; margin: 0 auto"></div>
+      <div id="total_heap_size_count" class = 'count' style="min-width: 512px; height: 300px; margin: 0 auto"></div>
 
       <div class="clear"> </div>
       <div id="port_summary"  style="min-width: 512px; height: 50px; margin: 0 auto">port_summary</div>
@@ -86,6 +161,13 @@
       <div id="inet_recv_cnt" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
       <div id="inet_sent_oct" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
       <div id="inet_recv_oct" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
+
+      <div class="clear"> </div>
+
+      <div id="alloc_memory" class = 'pie' style="min-width: 333px; height: 300px; margin: 0 auto"></div>
+      <div id="allocated_types" class = 'pie' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
+      <div id="allocated_instances" class = 'pie' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
+      <div id="allocated_to" class = 'pie' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
       
       <div id="console" class="well"> </div>
       <form class="well form-inline" onsubmit="return false;">
@@ -95,7 +177,7 @@
  </form>
 
  <!-- System Table info -->
- <table >
+ <table id="system">
   <button disabled="disabled">System Info</button>
   <thead>
     <tr>

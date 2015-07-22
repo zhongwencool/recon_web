@@ -51,7 +51,7 @@ init({_, http}, Req, [Config]) ->
 init_by_method(_Method, [] = _PathInfo,
     Config = #config{heartbeat_timeout = HeartbeatTimeout, session_timeout = SessionTimeout, opts = Opts},
     Req) ->
-  Sid = uuids:new(),
+  Sid = recon_web_uuids:new(),
   HeartbeatTimeoutBin = list_to_binary(integer_to_list(HeartbeatTimeout div 1000)),
   SessionTimeoutBin = list_to_binary(integer_to_list(SessionTimeout div 1000)),
 

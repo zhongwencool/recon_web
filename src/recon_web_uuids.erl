@@ -13,7 +13,7 @@
 
 % crypto server should be started
 
--module(uuids).
+-module(recon_web_uuids).
 -behaviour(gen_server).
  
 -define(DEFAULT_ALGORITHM, random).

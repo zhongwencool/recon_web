@@ -26,6 +26,12 @@ var inet_count_recv_cnt = {};
 var inet_count_sent_oct = {};
 var inet_count_recv_oct = {};
 
+var session_count = 1;
+
+var alloc_used = 1;
+var alloc_unused = 0;
+var alloc_allocated_types = {};
+var alloc_allocated_instances = {};
 
 // replace the url for  yourself
 var socket =  io.connect('http://127.0.0.1:8080'); 
@@ -55,19 +61,19 @@ function sendMessage() {
     // via Configuration.jsonTypeFieldName property
 
     var jsonObject = {userName: userName,
-                      message: message};
-    socket.json.send(jsonObject);
-}
-function output(message, data) {
+      message: message};
+      socket.json.send(jsonObject);
+  }
+  function output(message, data) {
     var currentTime = "<span class='time'>" +  moment().format('HH:mm:ss') + "</span>";
-        <!--JSON.stringify(message) -->
-        var element = $("<div>" + currentTime + " " + JSON.stringify(data)  + "</div>");
+    <!--JSON.stringify(message) -->
+    var element = $("<div>" + currentTime + " " + JSON.stringify(data)  + "</div>");
     if ( data instanceof Array ) {
         update_every_heartbeat(data);
     }else if(data.system_version != undefined){
         first_msg_from_server(data);
     };
-  $('#console').prepend(element);
+    $('#console').prepend(element);
 };
 
 function first_msg_from_server(data) {
@@ -108,58 +114,65 @@ function update_every_heartbeat(data){
     inet_count_sent_cnt = data[3].inet_count.sent_cnt;
     inet_count_recv_cnt = data[3].inet_count.recv_cnt;
 
+    session_count = data[4].session_count;
+    $("#circle").text("" + session_count);
+
+    alloc_used = Math.round(data[5].used *100)/100;
+    alloc_unused = Math.round(data[5].unused *100)/100;
+    alloc_allocated_types = data[5].allocated_types;
+    alloc_allocated_instances = data[5].allocated_instances;
 };
 
 function create_scheduler_chart(logical_processors){
-     if($('div').hasClass('scheduler')){}
-        else{
-            for(var i=logical_processors; i > 0; i--){
-                $('#memory').after('<div class = scheduler id="scheduler_usage' + i + '"style="min-width: 250px; height: 250px; margin: 0 auto"></div>');
-            };
-            $(document).ready(function (){
-                for(var j = 1; j< logical_processors +1; j++){        
-                    scheduler_name = 'scheduler_usage' + j;
-                    $('#' + scheduler_name).highcharts({
-                        chart: {
-                            type: 'gauge',
-                            plotBackgroundColor: null,
-                            plotBackgroundImage: null,
-                            plotBorderWidth: 0,
-                            plotShadow: false
-                        },
-                        credits:{
-                            text: "recon_web",
-                            href: "https://github.com/zhongwencool/recon_web"
-                        },
+ if($('div').hasClass('scheduler')){}
+    else{
+        for(var i=logical_processors; i > 0; i--){
+            $('#memory').after('<div class = scheduler id="scheduler_usage' + i + '"style="min-width: 250px; height: 250px; margin: 0 auto"></div>');
+        };
+        $(document).ready(function (){
+            for(var j = 1; j< logical_processors +1; j++){        
+                scheduler_name = 'scheduler_usage' + j;
+                $('#' + scheduler_name).highcharts({
+                    chart: {
+                        type: 'gauge',
+                        plotBackgroundColor: null,
+                        plotBackgroundImage: null,
+                        plotBorderWidth: 0,
+                        plotShadow: false
+                    },
+                    credits:{
+                        text: "recon_web",
+                        href: "https://github.com/zhongwencool/recon_web"
+                    },
 
-                        title: {
-                            text: scheduler_name
-                        },
+                    title: {
+                        text: scheduler_name
+                    },
 
-                        pane: {
-                            startAngle: -150,
-                            endAngle: 150,
-                            background: [{
-                                backgroundColor: {
-                                    linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-                                    stops: [
-                                    [0, '#FFF'],
-                                    [1, '#333']
-                                    ]
-                                },
-                                borderWidth: 0,
-                                outerRadius: '109%'
-                            }, {
-                                backgroundColor: {
-                                    linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-                                    stops: [
-                                    [0, '#333'],
-                                    [1, '#FFF']
-                                    ]
-                                },
-                                borderWidth: 1,
-                                outerRadius: '107%'
-                            }, {
+                    pane: {
+                        startAngle: -150,
+                        endAngle: 150,
+                        background: [{
+                            backgroundColor: {
+                                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                                stops: [
+                                [0, '#FFF'],
+                                [1, '#333']
+                                ]
+                            },
+                            borderWidth: 0,
+                            outerRadius: '109%'
+                        }, {
+                            backgroundColor: {
+                                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                                stops: [
+                                [0, '#333'],
+                                [1, '#FFF']
+                                ]
+                            },
+                            borderWidth: 1,
+                            outerRadius: '107%'
+                        }, {
                 // default background
             }, {
                 backgroundColor: '#DDD',
@@ -263,8 +276,8 @@ $(function () {
                 text: 'Process Info'
             },
             credits:{
-            text: "recon_web",
-            href: "https://github.com/zhongwencool/recon_web"
+                text: "recon_web",
+                href: "https://github.com/zhongwencool/recon_web"
             },
             xAxis: {
                 type: 'datetime',
@@ -284,8 +297,8 @@ $(function () {
                 shared: false,
                 formatter: function () {
                     return '<b>' + this.series.name + '</b><br/>' +
-                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-                        Highcharts.numberFormat(this.y, 2);
+                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                    Highcharts.numberFormat(this.y, 2);
                 }
             },
             legend: {
@@ -298,8 +311,8 @@ $(function () {
                 name: ' process_count',
                 data: (function () {
                     var data = [],
-                        time = (new Date()).getTime(),
-                        i;
+                    time = (new Date()).getTime(),
+                    i;
 
                     for (i = -19; i <= 0; i += 1) {
                         data.push({
@@ -314,8 +327,8 @@ $(function () {
                 name: 'run_queue',
                 data: (function () {
                     var data = [],
-                        time = (new Date()).getTime(),
-                        i;
+                    time = (new Date()).getTime(),
+                    i;
 
                     for (i = -19; i <= 0; i += 1) {
                         data.push({
@@ -330,8 +343,8 @@ $(function () {
                 name: 'error_logger_queue_len',
                 data: (function () {
                     var data = [],
-                        time = (new Date()).getTime(),
-                        i;
+                    time = (new Date()).getTime(),
+                    i;
 
                     for (i = -19; i <= 0; i += 1) {
                         data.push({
@@ -341,9 +354,9 @@ $(function () {
                     }
                     return data;
                 }())}
-            ]
-        });
-    });
+                ]
+            });
+});
 });
 
 // memory second live
@@ -405,8 +418,8 @@ $(function () {
                 shared: false,
                 formatter: function () {
                     return '<b>' + this.series.name + '</b><br/>' +
-                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-                        Highcharts.numberFormat(this.y, 2);
+                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                    Highcharts.numberFormat(this.y, 2);
                 }
             },
             legend: {
@@ -419,8 +432,8 @@ $(function () {
                 name: 'total_memory',
                 data: (function () {
                     var data = [],
-                        time = (new Date()).getTime(),
-                        i;
+                    time = (new Date()).getTime(),
+                    i;
 
                     for (i = -19; i <= 0; i += 1) {
                         data.push({
@@ -435,8 +448,8 @@ $(function () {
                 name: 'process_memory',
                 data: (function () {
                     var data = [],
-                        time = (new Date()).getTime(),
-                        i;
+                    time = (new Date()).getTime(),
+                    i;
 
                     for (i = -19; i <= 0; i += 1) {
                         data.push({
@@ -451,8 +464,8 @@ $(function () {
                 name: 'atom_memory',
                 data: (function () {
                     var data = [],
-                        time = (new Date()).getTime(),
-                        i;
+                    time = (new Date()).getTime(),
+                    i;
 
                     for (i = -19; i <= 0; i += 1) {
                         data.push({
@@ -463,100 +476,100 @@ $(function () {
                     return data;
                 }())},
                 {
-                name: 'bin_memory',
-                data: (function () {
-                    var data = [],
+                    name: 'bin_memory',
+                    data: (function () {
+                        var data = [],
                         time = (new Date()).getTime(),
                         i;
 
-                    for (i = -19; i <= 0; i += 1) {
-                        data.push({
-                            x: time + i * 1000,
-                            y: 70
-                        });
-                    }
-                    return data;
-                }())},
+                        for (i = -19; i <= 0; i += 1) {
+                            data.push({
+                                x: time + i * 1000,
+                                y: 70
+                            });
+                        }
+                        return data;
+                    }())},
 
-                {
-                name: 'ets_memory',
-                data: (function () {
-                    var data = [],
-                        time = (new Date()).getTime(),
-                        i;
+                    {
+                        name: 'ets_memory',
+                        data: (function () {
+                            var data = [],
+                            time = (new Date()).getTime(),
+                            i;
 
-                    for (i = -19; i <= 0; i += 1) {
-                        data.push({
-                            x: time + i * 1000,
-                            y: 60
-                        });
-                    }
-                    return data;
-                }())}
-            ]
-        });
-    });
+                            for (i = -19; i <= 0; i += 1) {
+                                data.push({
+                                    x: time + i * 1000,
+                                    y: 60
+                                });
+                            }
+                            return data;
+                        }())}
+                        ]
+                    });
+});
 });
 
 $(function () {
     $(document).ready(function () {
         $('#byte').highcharts({
-        chart: {
-            type: 'bar'
-        },
-        title: {
-            text: 'bytes in out'
-        },
-
-        xAxis: {
-            categories: ['Byte'],
-            title: {
-                text: null
-            }
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'Byte',
-                align: 'high'
+            chart: {
+                type: 'bar'
             },
-            labels: {
-                overflow: 'justify'
-            }
-        },
-        tooltip: {
-            valueSuffix: ' bit'
-        },
-        plotOptions: {
-            bar: {
-                dataLabels: {
-                    enabled: true
+            title: {
+                text: 'bytes in out'
+            },
+
+            xAxis: {
+                categories: ['Byte'],
+                title: {
+                    text: null
                 }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Byte',
+                    align: 'high'
+                },
+                labels: {
+                    overflow: 'justify'
+                }
+            },
+            tooltip: {
+                valueSuffix: ' bit'
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -40,
+                y: 80,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                shadow: true
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: 'Byte In',
+                data: [107]
+            }, {
+                name: 'Byte Out',
+                data: [133]
             }
-        },
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'top',
-            x: -40,
-            y: 80,
-            floating: true,
-            borderWidth: 1,
-            backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
-            shadow: true
-        },
-        credits: {
-            enabled: false
-        },
-        series: [{
-            name: 'Byte In',
-            data: [107]
-        }, {
-            name: 'Byte Out',
-            data: [133]
-        }
-        ]
-    },function (chart) {
+            ]
+        },function (chart) {
             if (!chart.renderer.forExport) {
                 setInterval(function () {
                     var point = chart.series[0].data[0];
@@ -565,66 +578,66 @@ $(function () {
                     point1.update(bytes_out);
 
                 }, 6010)}});
-    })});
+})});
 
 // proc_count
 $(function () {
     $(document).ready(function () {
         var proc_count_name = ['memory', 'bin_memory', 'reduction', 'total_heap_size'];
         for(var num = 0 ;num < proc_count_name.length; num++){ 
-        var name = proc_count_name[num];        
-        $('#' + name +'_count').highcharts({
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text:  name
-        },
-        credits:{
-            text: "recon_web",
-            href: "https://github.com/zhongwencool/recon_web"
-        },
-        xAxis: {
-            type: 'category',
-            labels: {
-                rotation: -45,
-                style: {
-                    fontSize: '13px',
-                    fontFamily: 'Verdana, sans-serif'
-                }
-            }
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'Kb'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        tooltip: {
-            pointFormat: ': <b>{point.y:.1f} Kb</b>'
-        },
-        series: [{
-            name: name,
-            data: [
-                ['pid1', 23.7],
-                ['pid2', 16.1],
-                ['pid3', 14.2],
-                ['pid4', 14.0],
-                ['pid5', 12.5],
-                ['pid6', 12.1],
-                ['pid7', 11.8],
-                ['pid8', 11.7],
-                ['pid9', 11.1],
-                ['pid10', 11.1]            
-                ],
-            dataLabels: {
-                enabled: true,
-                rotation: -90,
-                color: '#FFFFFF',
-                align: 'right',
+            var name = proc_count_name[num];        
+            $('#' + name +'_count').highcharts({
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text:  name
+                },
+                credits:{
+                    text: "recon_web",
+                    href: "https://github.com/zhongwencool/recon_web"
+                },
+                xAxis: {
+                    type: 'category',
+                    labels: {
+                        rotation: -45,
+                        style: {
+                            fontSize: '13px',
+                            fontFamily: 'Verdana, sans-serif'
+                        }
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Kb'
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                tooltip: {
+                    pointFormat: ': <b>{point.y:.1f} Kb</b>'
+                },
+                series: [{
+                    name: name,
+                    data: [
+                    ['pid1', 23.7],
+                    ['pid2', 16.1],
+                    ['pid3', 14.2],
+                    ['pid4', 14.0],
+                    ['pid5', 12.5],
+                    ['pid6', 12.1],
+                    ['pid7', 11.8],
+                    ['pid8', 11.7],
+                    ['pid9', 11.1],
+                    ['pid10', 11.1]            
+                    ],
+                    dataLabels: {
+                        enabled: true,
+                        rotation: -90,
+                        color: '#FFFFFF',
+                        align: 'right',
                 format: '{point.y:.1f}', // one decimal
                 y: 10, // 10 pixels down from the top
                 style: {
@@ -634,84 +647,84 @@ $(function () {
             }
         }]
     },function (chart) {
-                setInterval(function () {
-                    var pid = 0;
-                    var counts = "";
-                    if(chart.series[0].name == 'memory') {
-                        counts = memory_count;
-                    }else if(chart.series[0].name == 'bin_memory'){
-                        counts = bin_memory_count;
-                    }else if(chart.series[0].name == 'reduction'){
-                        counts = reductions_count;
-                    }else if(chart.series[0].name == 'total_heap_size'){
-                        counts = total_heap_size_count;
-                    };
-                    jQuery.each(counts, function(attr, value){
-                        var point = chart.series[0].data[pid++];
-                        point.update([attr, Math.round(value /(1024)* 100)/100]);
-                    });
+        setInterval(function () {
+            var pid = 0;
+            var counts = "";
+            if(chart.series[0].name == 'memory') {
+                counts = memory_count;
+            }else if(chart.series[0].name == 'bin_memory'){
+                counts = bin_memory_count;
+            }else if(chart.series[0].name == 'reduction'){
+                counts = reductions_count;
+            }else if(chart.series[0].name == 'total_heap_size'){
+                counts = total_heap_size_count;
+            };
+            jQuery.each(counts, function(attr, value){
+                var point = chart.series[0].data[pid++];
+                point.update([attr, Math.round(value /(1024)* 100)/100]);
+            });
 
-                }, 6010)}
-    )}})});
+        }, 6010)}
+        )}})});
 
 // inet_count
 $(function () {
     $(document).ready(function () {
         var proc_count_name = ['sent_oct', 'recv_oct', 'sent_cnt', 'recv_cnt'];
         for(var num = 0 ;num < proc_count_name.length; num++){ 
-        var name = proc_count_name[num];        
-        $('#inet_' + name).highcharts({
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text:  name
-        },
-        credits:{
-            text: "recon_web",
-            href: "https://github.com/zhongwencool/recon_web"
-        },
-        xAxis: {
-            type: 'category',
-            labels: {
-                rotation: -45,
-                style: {
-                    fontSize: '13px',
-                    fontFamily: 'Verdana, sans-serif'
-                }
-            }
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'Kb'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        tooltip: {
-            pointFormat: ': <b>{point.y:.1f} Kb</b>'
-        },
-        series: [{
-            name: name,
-            data: [
-                ['port1', 0],
-                ['port2', 0],
-                ['port3', 0],
-                ['port4', 0],
-                ['port5', 0],
-                ['port6', 0],
-                ['port7', 0],
-                ['port8', 0],
-                ['port9', 0],
-                ['port10', 0]            
-                ],
-            dataLabels: {
-                enabled: true,
-                rotation: -90,
-                color: '#FFFFFF',
-                align: 'right',
+            var name = proc_count_name[num];        
+            $('#inet_' + name).highcharts({
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text:  name
+                },
+                credits:{
+                    text: "recon_web",
+                    href: "https://github.com/zhongwencool/recon_web"
+                },
+                xAxis: {
+                    type: 'category',
+                    labels: {
+                        rotation: -45,
+                        style: {
+                            fontSize: '13px',
+                            fontFamily: 'Verdana, sans-serif'
+                        }
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Kb'
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                tooltip: {
+                    pointFormat: ': <b>{point.y:.1f} Kb</b>'
+                },
+                series: [{
+                    name: name,
+                    data: [
+                    ['port1', 0],
+                    ['port2', 0],
+                    ['port3', 0],
+                    ['port4', 0],
+                    ['port5', 0],
+                    ['port6', 0],
+                    ['port7', 0],
+                    ['port8', 0],
+                    ['port9', 0],
+                    ['port10', 0]            
+                    ],
+                    dataLabels: {
+                        enabled: true,
+                        rotation: -90,
+                        color: '#FFFFFF',
+                        align: 'right',
                 format: '{point.y:.1f}', // one decimal
                 y: 10, // 10 pixels down from the top
                 style: {
@@ -721,23 +734,70 @@ $(function () {
             }
         }]
     },function (chart) {
+        setInterval(function () {
+            var port = 0;
+            var counts = {};
+            if(chart.series[0].name == 'sent_oct') {
+                counts = inet_count_sent_oct;
+            }else if(chart.series[0].name == 'recv_oct'){
+                counts = inet_count_recv_oct;
+            }else if(chart.series[0].name == 'sent_cnt'){
+                counts = inet_count_sent_cnt;
+            }else if(chart.series[0].name == 'recv_cnt'){
+                counts = inet_count_recv_cnt;
+            };
+            jQuery.each(counts, function(attr, value){
+                var point = chart.series[0].data[port++];
+                point.update([attr, Math.round(value /(1024)* 100)/100]);
+            });
+
+        }, 6030)}
+        )}})});
+
+//alloc memory usage
+$(function () {
+    $(document).ready(function () {
+$('#alloc_memory').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: 'alloc usaged'
+            },
+            credits: {
+                enabled: false
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                         enabled: true,
+                         format: '<b>{point.name}</b>:{point.y:.1f} Mb'
+                     },
+                    showInLegend: false
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: 'memory usage',
+                data: [ 
+                ['used',   45.0],
+                ['unused',   45.0]
+                ]
+            }]
+        },function(chart){
+            if (!chart.renderer.forExport) {
                 setInterval(function () {
-                    var port = 0;
-                    var counts = {};
-                    if(chart.series[0].name == 'sent_oct') {
-                        counts = inet_count_sent_oct;
-                    }else if(chart.series[0].name == 'recv_oct'){
-                        counts = inet_count_recv_oct;
-                    }else if(chart.series[0].name == 'sent_cnt'){
-                        counts = inet_count_sent_cnt;
-                    }else if(chart.series[0].name == 'recv_cnt'){
-                        counts = inet_count_recv_cnt;
-                    };
-                    jQuery.each(counts, function(attr, value){
-                        var point = chart.series[0].data[port++];
-                        point.update([attr, Math.round(value /(1024)* 100)/100]);
-                    });
-
-                }, 6030)}
-    )}})});
-
+                    var point = chart.series[0].data[0];
+                    point.update(alloc_used);
+                    var point1 = chart.series[0].data[1];
+                    point1.update(alloc_unused);
+                }, 6010)}});
+    });
+    });

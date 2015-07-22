@@ -1,8 +1,9 @@
 # recon_web
 a web tool using recon to visual erlang VM 
 
-[Travis-CI](http://travis-ci.org/zhongwencool/recon_web) :: ![Travis-CI status](https://secure.travis-ci.org/zhongwencool/recon_web.png)
+Get Start:
+rake debug
+
+open 127.0.0.1:8080 
 
 
-
-DEVELOPING!!!!!!!!!
