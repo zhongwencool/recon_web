@@ -572,10 +572,8 @@ $(function () {
         },function (chart) {
             if (!chart.renderer.forExport) {
                 setInterval(function () {
-                    var point = chart.series[0].data[0];
-                    point.update(bytes_in);
-                    var point1 = chart.series[1].data[0];
-                    point1.update(bytes_out);
+                    chart.series[0].data[0].update(bytes_in);
+                    chart.series[1].data[0].update(bytes_out);
 
                 }, 6010)}});
 })});
@@ -660,8 +658,7 @@ $(function () {
                 counts = total_heap_size_count;
             };
             jQuery.each(counts, function(attr, value){
-                var point = chart.series[0].data[pid++];
-                point.update([attr, Math.round(value /(1024)* 100)/100]);
+                chart.series[0].data[pid++].update([attr, Math.round(value /(1024)* 100)/100]);
             });
 
         }, 6010)}
@@ -747,8 +744,7 @@ $(function () {
                 counts = inet_count_recv_cnt;
             };
             jQuery.each(counts, function(attr, value){
-                var point = chart.series[0].data[port++];
-                point.update([attr, Math.round(value /(1024)* 100)/100]);
+                chart.series[0].data[port++].update([attr, Math.round(value /(1024)* 100)/100]);
             });
 
         }, 6030)}
@@ -778,9 +774,9 @@ $('#alloc_memory').highcharts({
                     cursor: 'pointer',
                     dataLabels: {
                          enabled: true,
-                         format: '<b>{point.name}</b>:{point.y:.1f} Mb'
+                         format: '<b>{}</b>{point.y:.1f} Mb'
                      },
-                    showInLegend: false
+                    showInLegend: true
                 }
             },
             series: [{
@@ -794,10 +790,121 @@ $('#alloc_memory').highcharts({
         },function(chart){
             if (!chart.renderer.forExport) {
                 setInterval(function () {
-                    var point = chart.series[0].data[0];
-                    point.update(alloc_used);
-                    var point1 = chart.series[0].data[1];
-                    point1.update(alloc_unused);
+                    chart.series[0].data[0].update(alloc_used);
+                    chart.series[0].data[1].update(alloc_unused);
                 }, 6010)}});
     });
     });
+
+//alloc allocated_types
+$(function () {
+    $(document).ready(function () {
+$('#allocated_types').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: 'allocated_types'
+            },
+            credits: {
+                enabled: false
+            },
+            tooltip: {
+                pointFormat: '{}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                         enabled: true,
+                         format: '<b>{point.name}</b>:{point.y:.1f} Mb'
+                     },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: 'allocated_types',
+                data: [ 
+                ['binary',   1.157],
+                ['driver',   0.157],
+                ['eheap',    5.950],
+                ['ets',      1.041],
+                ['fix',      0.657],
+                ['ll',      20.000],
+                ['sl',       0.157],
+                ['std',      0.891],
+                ['temp',     0.626]
+                ]
+            }]
+        },function(chart){
+            if (!chart.renderer.forExport) {
+                setInterval(function () {
+                    chart.series[0].data[0].update(Math.round(alloc_allocated_types.binary_alloc * 10000)/10000);
+                    chart.series[0].data[1].update(Math.round(alloc_allocated_types.driver_alloc * 10000)/10000);
+                    chart.series[0].data[2].update(Math.round(alloc_allocated_types.eheap_alloc * 10000)/10000);
+                    chart.series[0].data[3].update(Math.round(alloc_allocated_types.ets_alloc * 10000)/10000);
+                    chart.series[0].data[4].update(Math.round(alloc_allocated_types.fix_alloc * 10000)/10000);
+                    chart.series[0].data[5].update(Math.round(alloc_allocated_types.ll_alloc * 10000)/10000);
+                    chart.series[0].data[6].update(Math.round(alloc_allocated_types.sl_alloc * 10000)/10000);
+                    chart.series[0].data[5].update(Math.round(alloc_allocated_types.std_alloc * 10000)/10000);
+                    chart.series[0].data[6].update(Math.round(alloc_allocated_types.temp_alloc * 10000)/10000);
+                }, 6015)}});
+    });
+    });
+
+//alloc allocated_instances
+$(function () {
+    $(document).ready(function () {
+$('#allocated_instances').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: 'allocated_instances'
+            },
+            credits: {
+                enabled: false
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                         enabled: true,
+                         format: '<b>{point.name}</b>:{point.y:.1f} '
+                     },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: 'allocated_instances',
+                data: [ 
+                ["0", 8.923324584960938],
+                ["1", 0.9389495849609375],
+                ["2", 4.2631683349609375],
+                ["3", 1.4389495849609375],
+                ["4", 15.438949584960938]
+                ]
+            }]
+        },function(chart){
+            if (!chart.renderer.forExport) {
+                setInterval(function () {
+                    chart.series[0].data[0].update(Math.round(alloc_allocated_instances[0] * 10000)/10000);
+                    chart.series[0].data[1].update(Math.round(alloc_allocated_instances[1] * 10000)/10000);
+                    chart.series[0].data[2].update(Math.round(alloc_allocated_instances[2] * 10000)/10000);
+                    chart.series[0].data[3].update(Math.round(alloc_allocated_instances[3] * 10000)/10000);
+                    chart.series[0].data[4].update(Math.round(alloc_allocated_instances[4] * 10000)/10000);
+                }, 6015)}});
+    });
+    });
+

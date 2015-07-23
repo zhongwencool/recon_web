@@ -27,10 +27,16 @@
     clear:both;
     float:none;
   }
-  .count {
+  .count_right {
+    float:right;
+  }
+  .pie_right {
+    float:right;
+  }
+    .count_left {
     float:left;
   }
-  .pie {
+  .pie_left {
     float:left;
   }
   .clear{
@@ -133,6 +139,7 @@ img.left, figure.left {float: left; margin: 0 2em 2em 0;}
       <li ><a href="#process">Process</a></li>
       <li ><a href="#memory">Memory</a></li>
       <li ><a href="#scheduler_usage1">Scheduler</a></li>
+      <li ><a href="#alloc_memory">Alloc</a></li>
       <li ><a href="#port_summary">Port</a></li>
       <li ><a href="#system">System</a></li>
     </ul></nav>
@@ -148,26 +155,25 @@ img.left, figure.left {float: left; margin: 0 2em 2em 0;}
       </div>
       <div id="process" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
       <div id="memory" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-      <div id="byte" class = 'count' style="min-width: 310px; height: 200px; margin: 0 auto"></div>
-      <div id="memory_count" class = 'count' style="min-width: 512px; height: 300px; margin: 0 auto"></div>
-      <div id="bin_memory_count" class = 'count' style="min-width: 512px; height: 300px; margin: 0 auto"></div>
-      <div id="reduction_count" class = 'count' style="min-width: 512px; height: 300px; margin: 0 auto"></div>
-      <div id="total_heap_size_count" class = 'count' style="min-width: 512px; height: 300px; margin: 0 auto"></div>
+
+      <div id="byte" class = 'count_left' style="min-width: 310px; height: 200px; margin: 0 auto"></div>
+      <div id="memory_count" class = 'count_left' style="min-width: 512px; height: 300px; margin: 0 auto"></div>
+      <div id="bin_memory_count" class = 'count_right' style="min-width: 512px; height: 300px; margin: 0 auto"></div>
+      <div id="reduction_count" class = 'count_left' style="min-width: 512px; height: 300px; margin: 0 auto"></div>
+      <div id="total_heap_size_count" class = 'count_right' style="min-width: 512px; height: 300px; margin: 0 auto"></div>
 
       <div class="clear"> </div>
+      <div id="alloc_memory" class = 'pie_left' style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+      <div id="allocated_types" class = 'pie_left' style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+      <div id="allocated_instances" class = 'pie_right' style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+
+      <div class="clear"> </div>
+
       <div id="port_summary"  style="min-width: 512px; height: 50px; margin: 0 auto">port_summary</div>
-
-      <div id="inet_sent_cnt" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
-      <div id="inet_recv_cnt" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
-      <div id="inet_sent_oct" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
-      <div id="inet_recv_oct" class = 'count' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
-
-      <div class="clear"> </div>
-
-      <div id="alloc_memory" class = 'pie' style="min-width: 333px; height: 300px; margin: 0 auto"></div>
-      <div id="allocated_types" class = 'pie' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
-      <div id="allocated_instances" class = 'pie' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
-      <div id="allocated_to" class = 'pie' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
+      <div id="inet_sent_cnt" class = 'count_left' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
+      <div id="inet_recv_cnt" class = 'count_right' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
+      <div id="inet_sent_oct" class = 'count_left' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
+      <div id="inet_recv_oct" class = 'count_right' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
       
       <div id="console" class="well"> </div>
       <form class="well form-inline" onsubmit="return false;">
