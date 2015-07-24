@@ -12,8 +12,8 @@ var memory_ets = 0;
 
 var scheduler_usage = new Array();
 
-var bytes_in = 100;
-var bytes_out =100;
+var bytes_in = 10;
+var bytes_out =10;
 
 var memory_count  = {};
 var bin_memory_count = {};
@@ -73,7 +73,7 @@ function sendMessage() {
     }else if(data.system_version != undefined){
         first_msg_from_server(data);
     };
-    $('#console').prepend(element);
+//    $('#console').prepend(element);
 };
 
 function first_msg_from_server(data) {
@@ -98,8 +98,8 @@ function update_every_heartbeat(data){
         scheduler_usage[index] = Math.round(val * 10000)/100;
     });
 
-    bytes_in = data[0].mem_summary.bytes_in+1+bytes_in;
-    bytes_out = data[0].mem_summary.bytes_out+2+bytes_out;
+    bytes_in = data[0].mem_summary.bytes_in+bytes_in;
+    bytes_out = data[0].mem_summary.bytes_out+bytes_out;
 
     memory_count = data[1].proc_count.memory;
     bin_memory_count = data[1].proc_count.bin_memory;
@@ -126,8 +126,13 @@ function update_every_heartbeat(data){
 function create_scheduler_chart(logical_processors){
  if($('div').hasClass('scheduler')){}
     else{
+        var is_left = 1;
+        var div;
         for(var i=logical_processors; i > 0; i--){
-            $('#memory').after('<div class = scheduler id="scheduler_usage' + i + '"style="min-width: 250px; height: 250px; margin: 0 auto"></div>');
+            var div_left = '<div class = scheduler id="scheduler_usage' + i + '"style="min-width: 250px; height: 250px; margin: 0 auto; float:left"></div>';
+            var div_right = '<div class = scheduler id="scheduler_usage' + i + '"style="min-width: 250px; height: 250px; margin: 0 auto; float:right"></div>';
+            if(is_left ==1||is_left ==2 ){div = div_left; is_left++}else if(is_left ==3){div = div_right; is_left++}else if(is_left == 4){div = div_right; is_left = 1};
+            $('#memory').after(div);
         };
         $(document).ready(function (){
             for(var j = 1; j< logical_processors +1; j++){        
@@ -273,7 +278,7 @@ $(function () {
                 }
             },
             title: {
-                text: 'Process Info'
+                text: 'Process Information'
             },
             credits:{
                 text: "recon_web",
@@ -285,7 +290,7 @@ $(function () {
             },
             yAxis: {
                 title: {
-                    text: 'Value'
+                    text: 'Count'
                 },
                 plotLines: [{
                     value: 0,
@@ -302,18 +307,17 @@ $(function () {
                 }
             },
             legend: {
-                enabled: false
+                enabled: true
             },
             exporting: {
                 enabled: false
             },
             series: [{
-                name: ' process_count',
+                name: 'process_count',
                 data: (function () {
                     var data = [],
                     time = (new Date()).getTime(),
                     i;
-
                     for (i = -19; i <= 0; i += 1) {
                         data.push({
                             x: time + i * 1000,
@@ -345,7 +349,6 @@ $(function () {
                     var data = [],
                     time = (new Date()).getTime(),
                     i;
-
                     for (i = -19; i <= 0; i += 1) {
                         data.push({
                             x: time + i * 1000,
@@ -375,7 +378,6 @@ $(function () {
                 marginRight: 10,
                 events: {
                     load: function () {
-
                         // set up the updating of the chart each second
                         var series_mem_total = this.series[0];
                         var series_mem_procs = this.series[1];                        
@@ -394,7 +396,7 @@ $(function () {
                 }
             },
             title: {
-                text: 'Memory Info'
+                text: 'Memory Information'
             },
             credits:{
                 text: "recon_web",
@@ -406,7 +408,7 @@ $(function () {
             },
             yAxis: {
                 title: {
-                    text: 'Value'
+                    text: 'Byte'
                 },
                 plotLines: [{
                     value: 0,
@@ -418,12 +420,12 @@ $(function () {
                 shared: false,
                 formatter: function () {
                     return '<b>' + this.series.name + '</b><br/>' +
-                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                    Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + ' byte<br/>' +
                     Highcharts.numberFormat(this.y, 2);
                 }
             },
             legend: {
-                enabled: false
+                enabled: true
             },
             exporting: {
                 enabled: false
@@ -434,7 +436,6 @@ $(function () {
                     var data = [],
                     time = (new Date()).getTime(),
                     i;
-
                     for (i = -19; i <= 0; i += 1) {
                         data.push({
                             x: time + i * 1000,
@@ -518,9 +519,8 @@ $(function () {
                 type: 'bar'
             },
             title: {
-                text: 'bytes in out'
+                text: 'Summary of bytes in out from open this web'
             },
-
             xAxis: {
                 categories: ['Byte'],
                 title: {
@@ -753,7 +753,7 @@ $(function () {
 //alloc memory usage
 $(function () {
     $(document).ready(function () {
-$('#alloc_memory').highcharts({
+        $('#alloc_memory').highcharts({
             chart: {
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
@@ -773,33 +773,33 @@ $('#alloc_memory').highcharts({
                     allowPointSelect: true,
                     cursor: 'pointer',
                     dataLabels: {
-                         enabled: true,
-                         format: '<b>{}</b>{point.y:.1f} Mb'
-                     },
-                    showInLegend: true
-                }
-            },
-            series: [{
-                type: 'pie',
-                name: 'memory usage',
-                data: [ 
-                ['used',   45.0],
-                ['unused',   45.0]
-                ]
-            }]
-        },function(chart){
-            if (!chart.renderer.forExport) {
-                setInterval(function () {
-                    chart.series[0].data[0].update(alloc_used);
-                    chart.series[0].data[1].update(alloc_unused);
-                }, 6010)}});
-    });
-    });
+                     enabled: true,
+                     format: '<b>{}</b>{point.y:.1f} Mb'
+                 },
+                 showInLegend: true
+             }
+         },
+         series: [{
+            type: 'pie',
+            name: 'memory usage',
+            data: [ 
+            ['used',   45.0],
+            ['unused',   45.0]
+            ]
+        }]
+    },function(chart){
+        if (!chart.renderer.forExport) {
+            setInterval(function () {
+                chart.series[0].data[0].update(alloc_used);
+                chart.series[0].data[1].update(alloc_unused);
+            }, 6010)}});
+});
+});
 
 //alloc allocated_types
 $(function () {
     $(document).ready(function () {
-$('#allocated_types').highcharts({
+        $('#allocated_types').highcharts({
             chart: {
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
@@ -819,47 +819,47 @@ $('#allocated_types').highcharts({
                     allowPointSelect: true,
                     cursor: 'pointer',
                     dataLabels: {
-                         enabled: true,
-                         format: '<b>{point.name}</b>:{point.y:.1f} Mb'
-                     },
-                    showInLegend: true
-                }
-            },
-            series: [{
-                type: 'pie',
-                name: 'allocated_types',
-                data: [ 
-                ['binary',   1.157],
-                ['driver',   0.157],
-                ['eheap',    5.950],
-                ['ets',      1.041],
-                ['fix',      0.657],
-                ['ll',      20.000],
-                ['sl',       0.157],
-                ['std',      0.891],
-                ['temp',     0.626]
-                ]
-            }]
-        },function(chart){
-            if (!chart.renderer.forExport) {
-                setInterval(function () {
-                    chart.series[0].data[0].update(Math.round(alloc_allocated_types.binary_alloc * 10000)/10000);
-                    chart.series[0].data[1].update(Math.round(alloc_allocated_types.driver_alloc * 10000)/10000);
-                    chart.series[0].data[2].update(Math.round(alloc_allocated_types.eheap_alloc * 10000)/10000);
-                    chart.series[0].data[3].update(Math.round(alloc_allocated_types.ets_alloc * 10000)/10000);
-                    chart.series[0].data[4].update(Math.round(alloc_allocated_types.fix_alloc * 10000)/10000);
-                    chart.series[0].data[5].update(Math.round(alloc_allocated_types.ll_alloc * 10000)/10000);
-                    chart.series[0].data[6].update(Math.round(alloc_allocated_types.sl_alloc * 10000)/10000);
-                    chart.series[0].data[5].update(Math.round(alloc_allocated_types.std_alloc * 10000)/10000);
-                    chart.series[0].data[6].update(Math.round(alloc_allocated_types.temp_alloc * 10000)/10000);
-                }, 6015)}});
-    });
-    });
+                     enabled: true,
+                     format: '<b>{point.name}</b>:{point.y:.1f} Mb'
+                 },
+                 showInLegend: true
+             }
+         },
+         series: [{
+            type: 'pie',
+            name: 'allocated_types',
+            data: [ 
+            ['binary',   1.157],
+            ['driver',   0.157],
+            ['eheap',    5.950],
+            ['ets',      1.041],
+            ['fix',      0.657],
+            ['ll',      20.000],
+            ['sl',       0.157],
+            ['std',      0.891],
+            ['temp',     0.626]
+            ]
+        }]
+    },function(chart){
+        if (!chart.renderer.forExport) {
+            setInterval(function () {
+                chart.series[0].data[0].update(Math.round(alloc_allocated_types.binary_alloc * 10000)/10000);
+                chart.series[0].data[1].update(Math.round(alloc_allocated_types.driver_alloc * 10000)/10000);
+                chart.series[0].data[2].update(Math.round(alloc_allocated_types.eheap_alloc * 10000)/10000);
+                chart.series[0].data[3].update(Math.round(alloc_allocated_types.ets_alloc * 10000)/10000);
+                chart.series[0].data[4].update(Math.round(alloc_allocated_types.fix_alloc * 10000)/10000);
+                chart.series[0].data[5].update(Math.round(alloc_allocated_types.ll_alloc * 10000)/10000);
+                chart.series[0].data[6].update(Math.round(alloc_allocated_types.sl_alloc * 10000)/10000);
+                chart.series[0].data[5].update(Math.round(alloc_allocated_types.std_alloc * 10000)/10000);
+                chart.series[0].data[6].update(Math.round(alloc_allocated_types.temp_alloc * 10000)/10000);
+            }, 6015)}});
+});
+});
 
 //alloc allocated_instances
 $(function () {
     $(document).ready(function () {
-$('#allocated_instances').highcharts({
+        $('#allocated_instances').highcharts({
             chart: {
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
@@ -879,32 +879,32 @@ $('#allocated_instances').highcharts({
                     allowPointSelect: true,
                     cursor: 'pointer',
                     dataLabels: {
-                         enabled: true,
-                         format: '<b>{point.name}</b>:{point.y:.1f} '
-                     },
-                    showInLegend: true
-                }
-            },
-            series: [{
-                type: 'pie',
-                name: 'allocated_instances',
-                data: [ 
-                ["0", 8.923324584960938],
-                ["1", 0.9389495849609375],
-                ["2", 4.2631683349609375],
-                ["3", 1.4389495849609375],
-                ["4", 15.438949584960938]
-                ]
-            }]
-        },function(chart){
-            if (!chart.renderer.forExport) {
-                setInterval(function () {
-                    chart.series[0].data[0].update(Math.round(alloc_allocated_instances[0] * 10000)/10000);
-                    chart.series[0].data[1].update(Math.round(alloc_allocated_instances[1] * 10000)/10000);
-                    chart.series[0].data[2].update(Math.round(alloc_allocated_instances[2] * 10000)/10000);
-                    chart.series[0].data[3].update(Math.round(alloc_allocated_instances[3] * 10000)/10000);
-                    chart.series[0].data[4].update(Math.round(alloc_allocated_instances[4] * 10000)/10000);
-                }, 6015)}});
-    });
-    });
+                     enabled: true,
+                     format: '<b>{point.name}</b>:{point.y:.1f} '
+                 },
+                 showInLegend: true
+             }
+         },
+         series: [{
+            type: 'pie',
+            name: 'allocated_instances',
+            data: [ 
+            ["0", 8.923324584960938],
+            ["1", 0.9389495849609375],
+            ["2", 4.2631683349609375],
+            ["3", 1.4389495849609375],
+            ["4", 15.438949584960938]
+            ]
+        }]
+    },function(chart){
+        if (!chart.renderer.forExport) {
+            setInterval(function () {
+                chart.series[0].data[0].update(Math.round(alloc_allocated_instances[0] * 10000)/10000);
+                chart.series[0].data[1].update(Math.round(alloc_allocated_instances[1] * 10000)/10000);
+                chart.series[0].data[2].update(Math.round(alloc_allocated_instances[2] * 10000)/10000);
+                chart.series[0].data[3].update(Math.round(alloc_allocated_instances[3] * 10000)/10000);
+                chart.series[0].data[4].update(Math.round(alloc_allocated_instances[4] * 10000)/10000);
+            }, 6015)}});
+});
+});
 

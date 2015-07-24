@@ -53,7 +53,7 @@
     padding: 0 0 0 0;
     float:left;
   }
-  .body {clear: both; margin: 0 auto; width: 1000px;}
+  .body {clear: both; margin: 0 auto; width: 1024px;}
 img.right, figure.right {float: right; margin: 0 0 2em 2em;}
 img.left, figure.left {float: left; margin: 0 2em 2em 0;}
 
@@ -66,14 +66,14 @@ img.left, figure.left {float: left; margin: 0 2em 2em 0;}
     margin: 0 auto 2em auto;
     padding: 0;
     text-align: center;
-    width: 1024px;
+    width: 1200px;
     
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
   }
   
-  #banner nav ul {list-style: none; margin: 0 auto; width: 1000px;}
+  #banner nav ul {list-style: none; margin: 0 auto; width: 1200px;}
   #banner nav li {float: left; display: inline; margin: 0;}
   
   #banner nav a:link, #banner nav a:visited {
@@ -104,7 +104,7 @@ img.left, figure.left {float: left; margin: 0 2em 2em 0;}
     height:35px;
     border-radius: 12.5px;
     float: right;
-    margin-top:0.5em;
+    margin-top:0.2em;
   }
 
   table{ border-collapse:collapse; margin: 10px,10px,10px,10px }
@@ -157,10 +157,10 @@ img.left, figure.left {float: left; margin: 0 2em 2em 0;}
       <div id="memory" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
       <div id="byte" class = 'count_left' style="min-width: 310px; height: 200px; margin: 0 auto"></div>
-      <div id="memory_count" class = 'count_left' style="min-width: 512px; height: 300px; margin: 0 auto"></div>
-      <div id="bin_memory_count" class = 'count_right' style="min-width: 512px; height: 300px; margin: 0 auto"></div>
-      <div id="reduction_count" class = 'count_left' style="min-width: 512px; height: 300px; margin: 0 auto"></div>
-      <div id="total_heap_size_count" class = 'count_right' style="min-width: 512px; height: 300px; margin: 0 auto"></div>
+      <div id="memory_count" class = 'count_left' style="min-width: 512px; height: 280px; margin: 0 auto"></div>
+      <div id="bin_memory_count" class = 'count_right' style="min-width: 512px; height: 280px; margin: 0 auto"></div>
+      <div id="reduction_count" class = 'count_left' style="min-width: 512px; height: 280px; margin: 0 auto"></div>
+      <div id="total_heap_size_count" class = 'count_right' style="min-width: 512px; height: 280px; margin: 0 auto"></div>
 
       <div class="clear"> </div>
       <div id="alloc_memory" class = 'pie_left' style="min-width: 400px; height: 400px; margin: 0 auto"></div>
@@ -175,14 +175,16 @@ img.left, figure.left {float: left; margin: 0 2em 2em 0;}
       <div id="inet_sent_oct" class = 'count_left' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
       <div id="inet_recv_oct" class = 'count_right' style="min-width: 512px; height: 400px; margin: 0 auto"></div>
       
-      <div id="console" class="well"> </div>
+      <!--      
+      <div id="console" class="well"> </div> 
       <form class="well form-inline" onsubmit="return false;">
        <input id="msg" class="input-xlarge" type="text" placeholder="Type something..."/>
        <button type="button" onClick="sendMessage()" class="btn">Send</button>
        <button type="button" onClick="sendDisconnect()" class="btn">Disconnect</button>
  </form>
-
+  -->
  <!-- System Table info -->
+ <div class="clear"> </div>
  <table id="system">
   <button disabled="disabled">System Info</button>
   <thead>
