@@ -8,7 +8,7 @@
     recon_to_json/1
         ]).
 
--define(ALL_RECON_INFO,[node_stats_list, proc_count, port, inet_count, session_count,alloc_memory]).
+-define(ALL_RECON_INFO,[node_stats_list, proc_count, port, inet_count, session_count,alloc_memory, cache_hit_rates]).
 -define(COUNT, 10).
 -define(INET_ATTR_LIST, ['sent_oct', 'recv_oct', 'sent_cnt', 'recv_cnt']).
 -define(ALLOC_MEMORY_LIST,[used, allocated, unused,allocated_types, allocated_instances]).
@@ -64,7 +64,11 @@ get_recon_info(session_count) ->
   [{session_count, ets:info(?SESSION_MANAGER_ETS, size)}];
 
 get_recon_info(alloc_memory) ->
-  [begin {Attr, recon_alloc:memory(Attr)} end || Attr<- ?ALLOC_MEMORY_LIST].
+  [begin {Attr, recon_alloc:memory(Attr)} end || Attr<- ?ALLOC_MEMORY_LIST];
+
+get_recon_info(cache_hit_rates) ->
+ [{cache_hit_rates, [begin {list_to_binary("instance" ++ integer_to_list(Num)), [Hits, Calls]}
+                     end|| {{instance, Num},[_, {hits, Hits}, {calls, Calls}]} <- recon_alloc:cache_hit_rates()]}].
 
 pid_to_display(List) ->
   [begin

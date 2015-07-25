@@ -32,6 +32,7 @@ var alloc_used = 1;
 var alloc_unused = 0;
 var alloc_allocated_types = {};
 var alloc_allocated_instances = {};
+var cache_hit = {};
 
 // replace the url for  yourself
 var socket =  io.connect('http://127.0.0.1:8080'); 
@@ -121,6 +122,10 @@ function update_every_heartbeat(data){
     alloc_unused = Math.round(data[5].unused *100)/100;
     alloc_allocated_types = data[5].allocated_types;
     alloc_allocated_instances = data[5].allocated_instances;
+    create_alloc_instance(Object.keys(alloc_allocated_instances).length);
+
+    cache_hit = data[6].cache_hit_rates;
+    create_cache_hit(cache_hit);
 };
 
 function create_scheduler_chart(logical_processors){
@@ -766,7 +771,7 @@ $(function () {
                 enabled: false
             },
             tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
             },
             plotOptions: {
                 pie: {
@@ -774,7 +779,7 @@ $(function () {
                     cursor: 'pointer',
                     dataLabels: {
                      enabled: true,
-                     format: '<b>{}</b>{point.y:.1f} Mb'
+                     format: '<b>{}</b>{point.y:.2f} Mb'
                  },
                  showInLegend: true
              }
@@ -812,7 +817,7 @@ $(function () {
                 enabled: false
             },
             tooltip: {
-                pointFormat: '{}: <b>{point.percentage:.1f}%</b>'
+                pointFormat: '{}: <b>{point.percentage:.2f}%</b>'
             },
             plotOptions: {
                 pie: {
@@ -820,7 +825,7 @@ $(function () {
                     cursor: 'pointer',
                     dataLabels: {
                      enabled: true,
-                     format: '<b>{point.name}</b>:{point.y:.1f} Mb'
+                     format: '<b>{point.name}</b>:{point.y:.2f} Mb'
                  },
                  showInLegend: true
              }
@@ -857,54 +862,126 @@ $(function () {
 });
 
 //alloc allocated_instances
-$(function () {
-    $(document).ready(function () {
-        $('#allocated_instances').highcharts({
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false
-            },
+function create_alloc_instance(instance_num){
+ if($('div').hasClass('already_create_instance')){}else {
+    $('#allocated_instances').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: 'allocated_instances'
+        },
+        credits: {
+            enabled: false
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                 enabled: true,
+                 format: '<b>{point.name}</b>:{point.y:.2f} '
+             },
+             showInLegend: true
+         }
+     },
+     series: [{
+        type: 'pie',
+        name: 'allocated_instances',
+        data: (function () {
+                    var data = [],
+                    i;
+                    for (i = 0; i < instance_num; i ++) {
+                        data.push({
+                            x: 8.923324584960938,
+                            y: i,
+                            name: "ins_" + i
+                        });
+                    }
+                    return data;
+                }())
+    }]
+},function(chart){
+    if (!chart.renderer.forExport) {
+        setInterval(function () {
+            var pid = 0;
+            jQuery.each(alloc_allocated_instances, function(attr, value){
+                chart.series[0].data[pid++].update(value);
+            });
+        }, 6015)}});
+};
+$('#allocated_instances').addClass("already_create_instance");
+};
+
+//alloc allocated_instances
+function create_cache_hit(instance){
+ if($('div').hasClass('already_create_cache_hit')){}else {
+    $('#cache_hit_chart').highcharts({
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: 'cache_hit_rates'
+        },
+        xAxis: {
+            categories:  (function () {
+                    var data = [];
+                    jQuery.each(instance, function(Attr,Value){
+                        data.push(Attr);
+                    });
+                    return data;
+                }())
+        },
+        yAxis: {
+            min: 0,
             title: {
-                text: 'allocated_instances'
+                text: 'Hit'
+            }
+        },
+        legend: {
+            reversed: false
+        },
+        tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
             },
-            credits: {
-                enabled: false
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                     enabled: true,
-                     format: '<b>{point.name}</b>:{point.y:.1f} '
-                 },
-                 showInLegend: true
-             }
-         },
-         series: [{
-            type: 'pie',
-            name: 'allocated_instances',
-            data: [ 
-            ["0", 8.923324584960938],
-            ["1", 0.9389495849609375],
-            ["2", 4.2631683349609375],
-            ["3", 1.4389495849609375],
-            ["4", 15.438949584960938]
-            ]
+        plotOptions: {
+            series: {
+                stacking: 'normal'
+            }
+        },
+        series:         
+        [{
+            name: 'NotHit',
+            data: 
+            (function () {
+                    var data = [];
+                    jQuery.each(instance, function(attr,value){
+                        data.push(value[1] - value[0]);
+                    });
+                    return data;
+                }())
+            
+        }, 
+        {
+            name: 'Hit',
+            data: 
+            (function () {
+                    var data = [];
+                    jQuery.each(instance, function(attr,value){
+                        data.push(value[0]);
+                    });
+                    return data;
+                }())
+
         }]
-    },function(chart){
-        if (!chart.renderer.forExport) {
-            setInterval(function () {
-                chart.series[0].data[0].update(Math.round(alloc_allocated_instances[0] * 10000)/10000);
-                chart.series[0].data[1].update(Math.round(alloc_allocated_instances[1] * 10000)/10000);
-                chart.series[0].data[2].update(Math.round(alloc_allocated_instances[2] * 10000)/10000);
-                chart.series[0].data[3].update(Math.round(alloc_allocated_instances[3] * 10000)/10000);
-                chart.series[0].data[4].update(Math.round(alloc_allocated_instances[4] * 10000)/10000);
-            }, 6015)}});
-});
-});
+    });
+    $('#cache_hit_chart').addClass("already_create_cache_hit");
+}}
+
+
 
