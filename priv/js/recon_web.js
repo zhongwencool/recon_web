@@ -902,7 +902,7 @@ function create_alloc_instance(instance_num){
                 data.push({
                     x: 8.923324584960938,
                     y: i,
-                    name: "ins_" + i + ":"
+                    name: "ins_" + i
                 });
             }
             return data;
@@ -991,7 +991,7 @@ function autoWidth(){
     $('#banner').width(max_width);
     $('nav').width(max_width);
     $('nav ul').width(max_width);
-    $('.scheduler').width(max_width/4);
+    $('.scheduler').width(max_width/(scheduler_usage.length -1));
     $('.count_left').width(max_width/2);
     $('.pie_left').width(max_width/3);
     $('#system').width(max_width);
