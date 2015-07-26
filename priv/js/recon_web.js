@@ -248,7 +248,7 @@ function create_scheduler_chart(logical_processors){
         })};
 })};
 var max_width = $(document.body).width();
-$('.scheduler').width(max_width/(scheduler_usage.length -1));
+$('.scheduler').width(max_width/(logical_processors));
 
 };
 //cup live second 
@@ -999,6 +999,7 @@ function autoWidth(){
     $('.pure-table').width(max_width);
     $('button').width(max_width);
 }
+setTimeout(function(){autoWidth();}, 10000);
 window.onresize = autoWidth;
 
 
