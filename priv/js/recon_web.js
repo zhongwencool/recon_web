@@ -130,7 +130,7 @@ function update_every_heartbeat(data){
 };
 
 function create_scheduler_chart(logical_processors){
-   if($('div').hasClass('scheduler')){}
+ if($('div').hasClass('scheduler')){}
     else{
         for(var i=logical_processors; i > 0 ; i--){
             var div_left = '<div class = scheduler id="scheduler_usage' + i + '"style=" float:left"></div>';
@@ -248,7 +248,8 @@ function create_scheduler_chart(logical_processors){
         })};
 })};
 var max_width = $(document.body).width();
-$('.scheduler').width(max_width/4);
+$('.scheduler').width(max_width/(scheduler_usage.length -1));
+
 };
 //cup live second 
 
@@ -667,8 +668,8 @@ $(function () {
 
         }, 6010)}
         )}});
-    var max_width = $(document.body).width();
-    $('.count_left').width(max_width/2);
+var max_width = $(document.body).width();
+$('.count_left').width(max_width/2);
 });
 
 // inet_count
@@ -780,13 +781,13 @@ $(function () {
                     allowPointSelect: true,
                     cursor: 'pointer',
                     dataLabels: {
-                       enabled: true,
-                       format: '<b>{}</b>{point.y:.2f} Mb'
-                   },
-                   showInLegend: true
-               }
-           },
-           series: [{
+                     enabled: true,
+                     format: '<b>{}</b>{point.y:.2f} Mb'
+                 },
+                 showInLegend: true
+             }
+         },
+         series: [{
             type: 'pie',
             name: 'memory usage',
             data: [ 
@@ -826,13 +827,13 @@ $(function () {
                     allowPointSelect: true,
                     cursor: 'pointer',
                     dataLabels: {
-                       enabled: true,
-                       format: '<b>{point.name}</b>:{point.y:.2f} Mb'
-                   },
-                   showInLegend: true
-               }
-           },
-           series: [{
+                     enabled: true,
+                     format: '<b>{point.name}</b>:{point.y:.2f} Mb'
+                 },
+                 showInLegend: true
+             }
+         },
+         series: [{
             type: 'pie',
             name: 'allocated_types',
             data: [ 
@@ -865,7 +866,7 @@ $(function () {
 
 //alloc allocated_instances
 function create_alloc_instance(instance_num){
-   if($('div').hasClass('already_create_instance')){}else {
+ if($('div').hasClass('already_create_instance')){}else {
     $('#allocated_instances').highcharts({
         chart: {
             plotBackgroundColor: null,
@@ -886,13 +887,13 @@ function create_alloc_instance(instance_num){
                 allowPointSelect: true,
                 cursor: 'pointer',
                 dataLabels: {
-                   enabled: true,
-                   format: '<b>{point.name}</b>:{point.y:.2f} '
-               },
-               showInLegend: true
-           }
-       },
-       series: [{
+                 enabled: true,
+                 format: '<b>{point.name}</b>:{point.y:.2f} '
+             },
+             showInLegend: true
+         }
+     },
+     series: [{
         type: 'pie',
         name: 'allocated_instances',
         data: (function () {
@@ -922,7 +923,7 @@ $('#allocated_instances').addClass("already_create_instance");
 
 //alloc allocated_instances
 function create_cache_hit(instance){
-   if($('div').hasClass('already_create_cache_hit')){}else {
+ if($('div').hasClass('already_create_cache_hit')){}else {
     $('#cache_hit_chart').highcharts({
         chart: {
             type: 'bar'
