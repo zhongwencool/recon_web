@@ -82,6 +82,7 @@ function first_msg_from_server(data) {
     jQuery.each(data, function(attr, val) { 
       $("#" + attr).html(""+val);})
     create_scheduler_chart(data.logical_processors);
+    autoWidth();
 };
 
 function update_every_heartbeat(data){   
@@ -116,7 +117,7 @@ function update_every_heartbeat(data){
     inet_count_recv_cnt = data[3].inet_count.recv_cnt;
 
     session_count = data[4].session_count;
-    $("#circle").text("" + session_count);
+    $("#login").text("Login Count:" + session_count);
 
     alloc_used = Math.round(data[5].used *100)/100;
     alloc_unused = Math.round(data[5].unused *100)/100;
@@ -129,15 +130,11 @@ function update_every_heartbeat(data){
 };
 
 function create_scheduler_chart(logical_processors){
- if($('div').hasClass('scheduler')){}
+   if($('div').hasClass('scheduler')){}
     else{
-        var is_left = 1;
-        var div;
-        for(var i=logical_processors; i > 0; i--){
-            var div_left = '<div class = scheduler id="scheduler_usage' + i + '"style="min-width: 250px; height: 250px; margin: 0 auto; float:left"></div>';
-            var div_right = '<div class = scheduler id="scheduler_usage' + i + '"style="min-width: 250px; height: 250px; margin: 0 auto; float:right"></div>';
-            if(is_left ==1||is_left ==2 ){div = div_left; is_left++}else if(is_left ==3){div = div_right; is_left++}else if(is_left == 4){div = div_right; is_left = 1};
-            $('#memory').after(div);
+        for(var i=logical_processors; i > 0 ; i--){
+            var div_left = '<div class = scheduler id="scheduler_usage' + i + '"style=" float:left"></div>';
+            $('#memory').after(div_left);
         };
         $(document).ready(function (){
             for(var j = 1; j< logical_processors +1; j++){        
@@ -171,7 +168,7 @@ function create_scheduler_chart(logical_processors){
                                 ]
                             },
                             borderWidth: 0,
-                            outerRadius: '109%'
+                            outerRadius: '100%'
                         }, {
                             backgroundColor: {
                                 linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
@@ -181,7 +178,7 @@ function create_scheduler_chart(logical_processors){
                                 ]
                             },
                             borderWidth: 1,
-                            outerRadius: '107%'
+                            outerRadius: '100%'
                         }, {
                 // default background
             }, {
@@ -250,6 +247,8 @@ function create_scheduler_chart(logical_processors){
             }
         })};
 })};
+var max_width = $(document.body).width();
+$('.scheduler').width(max_width/4);
 };
 //cup live second 
 
@@ -667,7 +666,10 @@ $(function () {
             });
 
         }, 6010)}
-        )}})});
+        )}});
+    var max_width = $(document.body).width();
+    $('.count_left').width(max_width/2);
+});
 
 // inet_count
 $(function () {
@@ -778,13 +780,13 @@ $(function () {
                     allowPointSelect: true,
                     cursor: 'pointer',
                     dataLabels: {
-                     enabled: true,
-                     format: '<b>{}</b>{point.y:.2f} Mb'
-                 },
-                 showInLegend: true
-             }
-         },
-         series: [{
+                       enabled: true,
+                       format: '<b>{}</b>{point.y:.2f} Mb'
+                   },
+                   showInLegend: true
+               }
+           },
+           series: [{
             type: 'pie',
             name: 'memory usage',
             data: [ 
@@ -824,13 +826,13 @@ $(function () {
                     allowPointSelect: true,
                     cursor: 'pointer',
                     dataLabels: {
-                     enabled: true,
-                     format: '<b>{point.name}</b>:{point.y:.2f} Mb'
-                 },
-                 showInLegend: true
-             }
-         },
-         series: [{
+                       enabled: true,
+                       format: '<b>{point.name}</b>:{point.y:.2f} Mb'
+                   },
+                   showInLegend: true
+               }
+           },
+           series: [{
             type: 'pie',
             name: 'allocated_types',
             data: [ 
@@ -863,7 +865,7 @@ $(function () {
 
 //alloc allocated_instances
 function create_alloc_instance(instance_num){
- if($('div').hasClass('already_create_instance')){}else {
+   if($('div').hasClass('already_create_instance')){}else {
     $('#allocated_instances').highcharts({
         chart: {
             plotBackgroundColor: null,
@@ -884,27 +886,27 @@ function create_alloc_instance(instance_num){
                 allowPointSelect: true,
                 cursor: 'pointer',
                 dataLabels: {
-                 enabled: true,
-                 format: '<b>{point.name}</b>:{point.y:.2f} '
-             },
-             showInLegend: true
-         }
-     },
-     series: [{
+                   enabled: true,
+                   format: '<b>{point.name}</b>:{point.y:.2f} '
+               },
+               showInLegend: true
+           }
+       },
+       series: [{
         type: 'pie',
         name: 'allocated_instances',
         data: (function () {
-                    var data = [],
-                    i;
-                    for (i = 0; i < instance_num; i ++) {
-                        data.push({
-                            x: 8.923324584960938,
-                            y: i,
-                            name: "ins_" + i
-                        });
-                    }
-                    return data;
-                }())
+            var data = [],
+            i;
+            for (i = 0; i < instance_num; i ++) {
+                data.push({
+                    x: 8.923324584960938,
+                    y: i,
+                    name: "ins_" + i + ":"
+                });
+            }
+            return data;
+        }())
     }]
 },function(chart){
     if (!chart.renderer.forExport) {
@@ -920,7 +922,7 @@ $('#allocated_instances').addClass("already_create_instance");
 
 //alloc allocated_instances
 function create_cache_hit(instance){
- if($('div').hasClass('already_create_cache_hit')){}else {
+   if($('div').hasClass('already_create_cache_hit')){}else {
     $('#cache_hit_chart').highcharts({
         chart: {
             type: 'bar'
@@ -930,12 +932,12 @@ function create_cache_hit(instance){
         },
         xAxis: {
             categories:  (function () {
-                    var data = [];
-                    jQuery.each(instance, function(Attr,Value){
-                        data.push(Attr);
-                    });
-                    return data;
-                }())
+                var data = [];
+                jQuery.each(instance, function(Attr,Value){
+                    data.push(Attr);
+                });
+                return data;
+            }())
         },
         yAxis: {
             min: 0,
@@ -947,8 +949,8 @@ function create_cache_hit(instance){
             reversed: false
         },
         tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
-            },
+            pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
+        },
         plotOptions: {
             series: {
                 stacking: 'normal'
@@ -959,29 +961,44 @@ function create_cache_hit(instance){
             name: 'NotHit',
             data: 
             (function () {
-                    var data = [];
-                    jQuery.each(instance, function(attr,value){
-                        data.push(value[1] - value[0]);
-                    });
-                    return data;
-                }())
+                var data = [];
+                jQuery.each(instance, function(attr,value){
+                    data.push(value[1] - value[0]);
+                });
+                return data;
+            }())
             
         }, 
         {
             name: 'Hit',
             data: 
             (function () {
-                    var data = [];
-                    jQuery.each(instance, function(attr,value){
-                        data.push(value[0]);
-                    });
-                    return data;
-                }())
+                var data = [];
+                jQuery.each(instance, function(attr,value){
+                    data.push(value[0]);
+                });
+                return data;
+            }())
 
         }]
     });
-    $('#cache_hit_chart').addClass("already_create_cache_hit");
+$('#cache_hit_chart').addClass("already_create_cache_hit");
 }}
+
+//adjust self width
+function autoWidth(){
+    var max_width = $(document.body).width();
+    $('#banner').width(max_width);
+    $('nav').width(max_width);
+    $('nav ul').width(max_width);
+    $('.scheduler').width(max_width/4);
+    $('.count_left').width(max_width/2);
+    $('.pie_left').width(max_width/3);
+    $('#system').width(max_width);
+    $('.pure-table').width(max_width);
+    $('button').width(max_width);
+}
+window.onresize = autoWidth;
 
 
 

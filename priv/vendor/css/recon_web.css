@@ -1,0 +1,140 @@
+@charset "UTF-8";
+body {
+	padding:20px;
+	font-size:15px;
+	margin:auto;
+	background:url(../img/body.jpg);
+	background-repeat:repeat;
+	letter-spacing:1px;
+	font-family:Georgia, "Times New Roman", Times, serif;
+}
+
+#title{
+	color:green;
+	font-size:18px;
+	font-style: normal;
+	font-weight: 10px;
+	margin-top:10px;
+}
+.scheduler {
+	float:left;
+}
+#process, #memory, #memory_count, #bin_memory_count, #reduction_count, #total_heap_size_count,#cache_hit_chart
+{
+
+	height: 400px;
+	margin: 0 auto;
+}
+#alloc_memory,#allocated_types,#allocated_instances{
+	height: 300px;
+	margin: 0;
+	min-width: 310;
+}
+#inet_sent_cnt,#inet_recv_cnt,#inet_sent_oct,#inet_recv_oct{
+
+	height: 400px; 
+	margin: 0 auto;
+}
+#port_summary{
+
+	height: 50px;
+	margin: 0 auto;
+	color: green;
+}
+#byte{
+	clear:both;
+	float:none;
+	min-width: 310px;
+	height: 200px; 
+	margin: 0 auto;
+}
+.count_right,.pie_right {
+	float:right;
+}
+.count_left,.pie_left {
+	float:left;
+}
+.clear{
+	clear:both;
+	margin-top: 10px;
+}
+
+header{
+	display: block;
+	margin: 0 auto;
+	padding: 0 0 0 0;
+	float:left;
+}
+
+img.right, figure.right {float: right; margin: 0 0 2em 2em;}
+img.left, figure.left {float: left; margin: 0 2em 2em 0;}
+
+/* Main Nav */
+#banner{
+	clear: both; 
+	margin: 0 auto;
+}
+#banner nav {
+	background: gray;
+	font-size: 1.143em;
+	height: 40px;
+	line-height: 30px;
+	margin: 0 auto 5px auto;
+	padding: 0;
+	text-align: center;
+	width: 1024px;
+
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+
+#banner nav ul {list-style: none; margin: 0 auto; width: 1024px;}
+#banner nav li {float: left; display: inline; margin: 5px,0,0,0;}
+
+#banner nav a:link, #banner nav a:visited {
+	color: #fff;
+	display: inline-block;
+	height: 25px;
+	padding: 8px 1.5em;
+	text-decoration: none;
+}
+#banner nav a:hover, #banner nav a:active,
+#banner nav .active a:link, #banner nav .active a:visited {
+	background: #C74451;
+	color: #fff;
+	text-shadow: none !important;
+}
+
+#banner nav li:first-child a {
+	border-top-left-radius: 5px;
+	-moz-border-radius-topleft: 5px;
+	-webkit-border-top-left-radius: 5px;
+
+	border-bottom-left-radius: 5px;
+	-moz-border-radius-bottomleft: 5px;
+	-webkit-border-bottom-left-radius: 5px;
+}
+
+.scheduler{
+	min-width: 310px; 
+	height: 250px;
+	margin: 0 auto; 
+	float:left;
+}
+
+table{ border-collapse:collapse; margin: 10px,10px,10px,10px }
+td{ border:2px solid green; margin:10px,10px,10px,10px}
+button{
+	margin: auto;
+	color:white;
+}
+#console {
+	height: 400px;
+	clear:both;
+	overflow: auto;
+	margin-top:220px;
+}
+.connect-msg {color:green;}
+.disconnect-msg {color:red;}
+.send-msg {color:#888}
