@@ -17,7 +17,6 @@ body {
 	margin-top:10px;
 }
 .scheduler {
-	float:left;
 }
 #process, #memory, #memory_count, #bin_memory_count, #reduction_count, #total_heap_size_count,#cache_hit_chart
 {
@@ -120,7 +119,6 @@ img.left, figure.left {float: left; margin: 0 2em 2em 0;}
 	min-width: 310px; 
 	height: 250px;
 	margin: 0 auto; 
-	float:left;
 }
 
 table{ border-collapse:collapse; margin: 10px,10px,10px,10px }

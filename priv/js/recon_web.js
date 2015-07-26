@@ -133,8 +133,8 @@ function create_scheduler_chart(logical_processors){
  if($('div').hasClass('scheduler')){}
     else{
         for(var i=logical_processors; i > 0 ; i--){
-            var div_left = '<div class = scheduler id="scheduler_usage' + i + '"style=" float:left"></div>';
-            $('#memory').after(div_left);
+            var div_left = '<div class = scheduler id="scheduler_usage' + i + '" style="with:120px; display:inline-block;text-align:center;background:#FFF;"></div>';
+	    $("#outer_schedule").append(div_left);
         };
         $(document).ready(function (){
             for(var j = 1; j< logical_processors +1; j++){        
@@ -247,9 +247,6 @@ function create_scheduler_chart(logical_processors){
             }
         })};
 })};
-var max_width = $(document.body).width();
-$('.scheduler').width(max_width/(logical_processors));
-
 };
 //cup live second 
 
@@ -992,14 +989,13 @@ function autoWidth(){
     $('#banner').width(max_width);
     $('nav').width(max_width);
     $('nav ul').width(max_width);
-    $('.scheduler').width(max_width/(scheduler_usage.length -1));
     $('.count_left').width(max_width/2);
     $('.pie_left').width(max_width/3);
     $('#system').width(max_width);
     $('.pure-table').width(max_width);
     $('button').width(max_width);
 }
-setTimeout(function(){autoWidth();}, 10000);
+/*setTimeout(function(){autoWidth();}, 10000);*/
 window.onresize = autoWidth;
 
 
