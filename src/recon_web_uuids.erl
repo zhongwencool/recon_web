@@ -15,7 +15,6 @@
 
 -module(recon_web_uuids).
 -behaviour(gen_server).
- 
 -define(DEFAULT_ALGORITHM, random).
 
 -export([start_link/0, stop/0]).

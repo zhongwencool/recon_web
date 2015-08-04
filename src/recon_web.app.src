@@ -11,6 +11,7 @@
                   jsx,
                   cowboy
                  ]},
+  {modules,[]},
   {mod, { recon_web_app, []}},
   {env, [
          %%{ip,{10,142,35,165}},%% default :localhost,better using nginx to proxypass

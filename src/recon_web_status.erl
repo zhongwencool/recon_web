@@ -7,11 +7,10 @@
     get_recon_info/1,
     recon_to_json/1
         ]).
-
--define(ALL_RECON_INFO,[node_stats_list, proc_count, port, inet_count, session_count,alloc_memory, cache_hit_rates]).
+-define(ALL_RECON_INFO, [node_stats_list, proc_count, port, inet_count, session_count, alloc_memory, cache_hit_rates]).
 -define(COUNT, 10).
 -define(INET_ATTR_LIST, ['sent_oct', 'recv_oct', 'sent_cnt', 'recv_cnt']).
--define(ALLOC_MEMORY_LIST,[used, allocated, unused,allocated_types, allocated_instances]).
+-define(ALLOC_MEMORY_LIST, [used, allocated, unused, allocated_types, allocated_instances]).
 
 get_all_recon_info() ->
     [begin get_recon_info(Item) end || Item<- ?ALL_RECON_INFO].
@@ -47,18 +46,18 @@ get_recon_info(proc_count) ->
   NewBinMemoryList = pid_to_display(BinMemoryList),
   NewReductionList = pid_to_display(ReductionList),
   NewHeapSizeList = pid_to_display(HeapSizeList),
-  [{proc_count,[{memory, NewMemoryList}, {bin_memory, NewBinMemoryList},
-    {reductions, NewReductionList},{total_heap_size, NewHeapSizeList} ]}];
+  [{proc_count, [{memory, NewMemoryList}, {bin_memory, NewBinMemoryList},
+    {reductions, NewReductionList}, {total_heap_size, NewHeapSizeList} ]}];
 
 get_recon_info(port) ->
   PortInfo = recon:port_types(),
   NewPortInfo = [begin {list_to_binary(Key), Value} end|| {Key, Value} <- PortInfo],
   [{port_summary, NewPortInfo}];
 get_recon_info(inet_count) ->
-  [{inet_count,[begin
+  [{inet_count, [begin
                  AttrSizes = recon:inet_count(Attr, ?COUNT),
                  {Attr, [begin {port_to_display(Port), Size} end||{Port, Size, _} <- AttrSizes]}
-               end ||Attr <-?INET_ATTR_LIST]}];
+                 end ||Attr <-?INET_ATTR_LIST]}];
 
 get_recon_info(session_count) ->
   [{session_count, ets:info(?SESSION_MANAGER_ETS, size)}];
@@ -68,14 +67,14 @@ get_recon_info(alloc_memory) ->
 
 get_recon_info(cache_hit_rates) ->
  [{cache_hit_rates, [begin {list_to_binary("instance" ++ integer_to_list(Num)), [Hits, Calls]}
-                     end|| {{instance, Num},[_, {hits, Hits}, {calls, Calls}]} <- recon_alloc:cache_hit_rates()]}].
+                     end|| {{instance, Num}, [_, {hits, Hits}, {calls, Calls}]} <- recon_alloc:cache_hit_rates()]}].
 
 pid_to_display(List) ->
   [begin
      NewName = case is_atom(Name) of
                   false ->
                     erlang:list_to_binary((erlang:pid_to_list(Pid) -- "<") -- ">"); %% not registerd
-                 true -> erlang:atom_to_binary(Name,utf8)
+                 true -> erlang:atom_to_binary(Name, utf8)
                end,
      {NewName, Count} end||{Pid, Count, [Name|_]} <- List].
 

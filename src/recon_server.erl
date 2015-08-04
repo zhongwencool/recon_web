@@ -20,14 +20,14 @@
 
 -export([request_recon_info/2,
     request_system_info/2
-]).
+        ]).
 
 %%gen_server callback
 -export([init/1, terminate/2, code_change/3,
     handle_call/3, handle_cast/2, handle_info/2]).
 
--define(SYSTEM_UPDATE_INTERVAL_SEC,60 * 60 ).
--define(RECON_UPDATE_INTERVAL_SEC,5).
+-define(SYSTEM_UPDATE_INTERVAL_SEC, 60 * 60 ).
+-define(RECON_UPDATE_INTERVAL_SEC, 5).
 
 -record(state, {system = [], system_update_time = 1000, recon = [], recon_update_time = 1000}).
 
@@ -49,8 +49,8 @@ init([]) ->
     recon_alloc:set_unit(megabyte),
     {ok, #state{}, hibernate}.
 
-handle_call(_Request, _From, State) ->
-    lager:error("~p:unknow call request~p~n",[?MODULE, _Request]),
+handle_call(Request, _From, State) ->
+    lager:error("~p:unknow call request~p~n", [?MODULE, Request]),
     {reply, ok, State}.
 
 handle_cast(stop, State) ->
@@ -58,22 +58,22 @@ handle_cast(stop, State) ->
 
 handle_cast({request_system_info, SessionPid, Sid}, State) ->
     Now = calendar:datetime_to_gregorian_seconds(calendar:universal_time()),
-    {[SystemInfo,_ReconInfo], NewState} = update(Now, State),
+    {[SystemInfo, _ReconInfo], NewState} = update(Now, State),
     recon_web_session:send_obj(SessionPid, Sid, SystemInfo),
     {noreply, NewState};
 
 handle_cast({request_recon_info, SessionPid, Sid}, State) ->
     Now = calendar:datetime_to_gregorian_seconds(calendar:universal_time()),
-    {[_SystemInfo,ReconInfo], NewState} = update(Now, State),
+    {[_SystemInfo, ReconInfo], NewState} = update(Now, State),
     recon_web_session:send_obj(SessionPid, Sid, ReconInfo),
     {noreply, NewState};
 
-handle_cast(_Msg, State) ->
-    lager:error("~p:unknow cast request~p~n",[?MODULE, _Msg]),
+handle_cast(Msg, State) ->
+    lager:error("~p:unknow cast request~p~n", [?MODULE, Msg]),
     {noreply, State}.
 
-handle_info(_Info, State) ->
-    lager:error("~p:unknow info request~p~n",[?MODULE, _Info]),
+handle_info(Info, State) ->
+    lager:error("~p:unknow info request~p~n", [?MODULE, Info]),
     {noreply, State}.
 
 code_change(_OldVsn, State, _Extra) ->

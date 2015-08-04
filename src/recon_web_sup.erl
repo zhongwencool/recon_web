@@ -1,5 +1,4 @@
 -module(recon_web_sup).
-   
 -behaviour(supervisor).
 
 %% API
@@ -24,7 +23,7 @@ start_link() ->
 
 init([]) ->
     {ok, {{one_for_one, 10, 10},
-        [?CHILD(recon_web_uuids,worker),
-          ?CHILD(recon_server,worker),
-          ?CHILD(recon_web_session_sup,supervisor)
+        [?CHILD(recon_web_uuids, worker),
+          ?CHILD(recon_server, worker),
+          ?CHILD(recon_web_session_sup, supervisor)
         ]}}.

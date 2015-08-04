@@ -67,7 +67,7 @@ find(SessionId) ->
     [{_, Pid}] -> {ok, Pid}
   end.
 
-set_caller_and_pull_msg(Pid,Caller) ->
+set_caller_and_pull_msg(Pid, Caller) ->
   gen_server:call(Pid, {set_caller_and_pull_msg, Caller}, infinity).
 
 pull_msg_from_session(Pid) ->
@@ -81,7 +81,7 @@ send_message_to_client(Pid, Text) ->
   gen_server:cast(Pid, {message, Text}).
 
 send_obj(Pid, Sid, Obj) ->
-  gen_server:cast(Pid, {send, Sid,{json, <<>>, <<>>, Obj}}).
+  gen_server:cast(Pid, {send, Sid, {json, <<>>, <<>>, Obj}}).
 
 deliver_msg(Pid, Messages) when is_list(Messages) ->
   gen_server:call(Pid, {deliver_msg, Messages}, infinity).
@@ -119,7 +119,7 @@ init([SessionId, SessionTimeout, Opts]) ->
 %%--------------------------------------------------------------------
 handle_call({set_caller_and_pull_msg, Caller}, _From,  State = #state{caller = undefined, messages = Messages}) ->
   State1 = refresh_session_timeout(State),
-  {reply,lists:reverse(Messages), State1#state{caller = Caller,messages = []}};
+  {reply, lists:reverse(Messages), State1#state{caller = Caller, messages = []}};
 handle_call({set_caller_and_pull_msg, _Caller}, _From,  State ) ->
   State1 = refresh_session_timeout(State),
   {reply, ?SESSION_IN_USE, State1};
@@ -173,7 +173,7 @@ handle_info(session_timeout, State) ->
 
 handle_info(register_in_ets, State =
   #state{id = SessionId, registered = false}) ->
-  lager:info("recon_web_session:~p    register_in_ets Pid ~p ~n",[SessionId, self()]),
+  lager:info("recon_web_session:~p    register_in_ets Pid ~p ~n", [SessionId, self()]),
   case ets:insert_new(?SESSION_MANAGER_ETS, {SessionId, self()}) of
     true ->
       connect(self(), SessionId),
@@ -189,7 +189,7 @@ handle_info(_Info, State) ->
   lager:error("recon_web_session2 unknow message ~p~n", [_Info]),
   {noreply, State}.
 %%--------------------------------------------------------------------
-terminate(_Reason,State = #state{id = SessionId}) ->
+terminate(_Reason, State = #state{id = SessionId}) ->
   ets:delete(?SESSION_MANAGER_ETS, SessionId),
   {stop, normal, State}.
 %%--------------------------------------------------------------------
@@ -219,12 +219,12 @@ process_messages([Message|Rest], State = #state{id = Sid}) ->
       process_messages(Rest, State);
 %% todo handle message
     {message, <<>>, EndPoint, Obj} ->
-      lager:info("from client message~p~n",[{EndPoint, Obj}]),
+      lager:info("from client message~p~n", [{EndPoint, Obj}]),
       process_messages(Rest, State);
     {json, <<>>, EndPoint, Obj} ->
-      lager:info("from client json~p~n",[{EndPoint, Obj}]),
+      lager:info("from client json~p~n", [{EndPoint, Obj}]),
       process_messages(Rest, State);
-    _T ->
-      lager:error("unknow:~p~n",[_T]),
+    T ->
+      lager:error("unknow:~p~n", [T]),
       process_messages(Rest, State)
   end.

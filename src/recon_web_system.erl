@@ -26,15 +26,15 @@ get_system_info(Items) ->
     end, [], Items).
 
 system_to_json(Systems) ->
-    NewSystems = lists:foldl(fun(Sys, Acc) -> system_to_prop(Sys) ++Acc end, [], Systems),
+    NewSystems = lists:foldl(fun(Sys, Acc) -> system_to_prop(Sys) ++ Acc end, [], Systems),
     NewSystems.
 
 system_to_prop({PrimKey, Items})when PrimKey =:= check_io; PrimKey =:= garbage_collection ->
     PrimKeyStr = to_binary(PrimKey),
     [{<<PrimKeyStr/binary, "_", (to_binary(Key))/binary>>, Value} ||{Key, Value} <- Items];
 system_to_prop({c_compiler_used, {Name, {Major, Minor, Patch}}}) ->
-    [{<<"c_compiler_user",(list_to_binary(atom_to_list(Name)))/binary>>,
-        list_to_binary("Major:" ++ integer_to_list(Major)++ " Minor:" ++
+    [{<<"c_compiler_user", (list_to_binary(atom_to_list(Name)))/binary>>,
+        list_to_binary("Major:" ++ integer_to_list(Major) ++ " Minor:" ++
             integer_to_list(Minor) ++ " Patch:" ++ integer_to_list(Patch))}];
 system_to_prop({fullsweep_after, {_, After}}) ->
     [{fullsweep_after, After}];

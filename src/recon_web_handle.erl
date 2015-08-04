@@ -12,7 +12,6 @@
 %% limitations under the License.
 
 -module(recon_web_handle).
- 
 -include("recon_web.hrl").
 
 %%API
@@ -44,7 +43,7 @@ notify_handler_have_new_message(HanderPid, SessionPid) ->
 init({_, http}, Req, [Config]) ->
   {Method, _} = cowboy_req:method(Req),
   {PathInfo, _} = cowboy_req:path_info(Req),
-  lager:debug("+++++ PathInfo:~p~n",[PathInfo]),
+  lager:debug("+++++ PathInfo:~p~n", [PathInfo]),
   init_by_method(Method, PathInfo, Config, Req).
 
 %%1) http://127.0.0.1:8080/socket.io/1/?t=1436608179209
@@ -56,7 +55,7 @@ init_by_method(_Method, [] = _PathInfo,
   SessionTimeoutBin = list_to_binary(integer_to_list(SessionTimeout div 1000)),
 
   {ok, _SessionPid} = recon_web_session:create(Sid, SessionTimeout, Opts),
-  Result = <<":", HeartbeatTimeoutBin/binary, ":", SessionTimeoutBin/binary, ":websocket,xhr-polling">>,
+  Result = << ":", HeartbeatTimeoutBin/binary, ":", SessionTimeoutBin/binary, ":websocket, xhr-polling">>,
   {ok, Req1} = cowboy_req:reply(200, ?TEXT_HEAD, <<Sid/binary, Result/binary>>, Req),
   {ok, Req1, #http_state{action = ?CREATE_SESSION, config = Config}};
 
@@ -65,7 +64,7 @@ init_by_method(_Method, [<<"websocket">>, _Sid], Config, Req) ->
   {upgrade, protocol, cowboy_websocket, Req, {Config}};
 
 %%3) ws://127.0.0.1:8080/socket.io/xhr-polling/8080fa8492eb609e79471f1c5e396681 GET
-init_by_method(<<"GET">>,[<<"xhr-polling">>, Sid], Config = #config{protocol = Protocol}, Req) ->
+init_by_method(<<"GET">>, [<<"xhr-polling">>, Sid], Config = #config{protocol = Protocol}, Req) ->
   case recon_web_session:find(Sid) of
     {ok, Pid} ->
       case recon_web_session:set_caller_and_pull_msg(Pid, self()) of
@@ -73,18 +72,19 @@ init_by_method(<<"GET">>,[<<"xhr-polling">>, Sid], Config = #config{protocol = P
           {ok, Req, #http_state{action = ?SESSION_IN_USE, config = Config, session_id = Sid}};
         [] ->
           TRef = erlang:start_timer(Config#config.heartbeat, self(), {?MODULE, Pid}),
-          {cowboy_loop, Req, #http_state{action = ?HEARTBEAT, config = Config,session_id = Sid, heartbeat_tref = TRef, pid = Pid}, infinity};
+          {cowboy_loop, Req, #http_state{action = ?HEARTBEAT, config = Config, session_id = Sid,
+            heartbeat_tref = TRef, pid = Pid}, infinity};
         %%{ok, Req, #http_state{action = ?DATA, config = Config, session_id = Sid, pid = Pid}};
         Messages ->
           Req1 = cowboy_req:reply(200, ?TEXT_HEAD, Protocol:encode(Messages), Req),
           {ok, Req1, #http_state{action = ?DATA, config = Config, session_id = Sid, pid = Pid}}
       end;
-    {error,not_found} ->
+    {error, not_found} ->
       {ok, Req, #http_state{action =?SESSION_NOT_FIND, session_id = Sid, config = Config}}
   end;
 
 %% @todo support POST sometime client will send post .... bug!!!
-init_by_method(<<"POST">>,[<<"xhr-polling">>, Sid],Config=#config{protocol = Protocol},Req) ->
+init_by_method(<<"POST">>, [<<"xhr-polling">>, Sid], Config=#config{protocol = Protocol}, Req) ->
   case recon_web_session:find(Sid) of
     {ok, Pid} ->
       case cowboy_req:body(Req) of
@@ -99,17 +99,17 @@ init_by_method(<<"POST">>,[<<"xhr-polling">>, Sid],Config=#config{protocol = Pro
       {ok, Req, #http_state{action =?SESSION_NOT_FIND, session_id = Sid, config = Config}}
   end;
 
-init_by_method(_Method,_PathInfo,Config,Req) ->
+init_by_method(_Method, _PathInfo, Config, Req) ->
   {ok, Req, #http_state{config = Config}}.
 
 %% @todo no useness  del
 info({timeout, TRef, {?MODULE, _Pid}}, Req, HttpState =
   #http_state{action = ?HEARTBEAT, heartbeat_tref = TRef}) ->
-  lager:error("recon_web_handler1:info~p~n",[timeout]),
+  lager:error("recon_web_handler1:info~p~n", [timeout]),
   {loop, Req, HttpState#http_state{heartbeat_tref = undefined}};
 
-info(_Info, Req, HttpState) ->
-  lager:error("recon_web_handler:info~p~n",[_Info]),
+info(Info, Req, HttpState) ->
+  lager:error("recon_web_handler:info~p~n", [Info]),
   {ok, Req, HttpState}.
 
 terminate(_Reason, _Req, _HttpState = #http_state{action = Action}) when
@@ -155,7 +155,7 @@ websocket_init(_TransportName, Req, {Config}) ->
   {ok, Req, {Config}}.
 
 websocket_info(post_init, Req, {Config}) ->
-  {[<<"websocket">>, Sid],_Req1} = cowboy_req:path_info(Req),
+  {[<<"websocket">>, Sid], _Req1} = cowboy_req:path_info(Req),
   case recon_web_session:find(Sid) of
     {ok, Pid} ->
       erlang:monitor(process, Pid),
@@ -184,7 +184,7 @@ websocket_info({message_arrived, Pid}, Req, State) ->
 
 %%heartbeat
 websocket_info({timeout, _TRef, {?MODULE, Pid}}, Req, State =
-  {#config{protocol = Protocol,heartbeat = Heartbeat}, Pid}) ->
+  {#config{protocol = Protocol, heartbeat = Heartbeat}, Pid}) ->
   recon_web_session:refresh(Pid),
   erlang:start_timer(Heartbeat, self(), {?MODULE, Pid}),
   Packet = Protocol:encode(heartbeat),
@@ -194,27 +194,27 @@ websocket_info({timeout, _TRef, {?MODULE, Pid}}, Req, State =
 websocket_info({'DOWN', _Ref, process, Pid, _Reason}, Req, State = {_Config, Pid}) ->
   {shutdown, Req, State};
 
-websocket_info(_Info, Req, State) ->
-  lager:info("unknow wesocket_info~p~n",[?MODULE, _Info]),
+websocket_info(Info, Req, State) ->
+  lager:info("unknow wesocket_info~p~n", [?MODULE, Info]),
   {ok, Req, State}.
 
 %% message from client websocket
 websocket_handle({text, Data}, Req, State = {#config{protocol = Protocol}, Pid}) ->
   Messages = Protocol:decode(Data),
-  lager:debug("from client text~p~n",[Messages]),
+  lager:debug("from client text~p~n", [Messages]),
   recon_web_session:deliver_msg(Pid, Messages),
   {ok, Req, State};
 
-websocket_handle(_Data, Req, State) ->
-  lager:error("unknow send from client~p~n",[_Data]),
+websocket_handle(Data, Req, State) ->
+  lager:error("unknow send from client~p~n", [Data]),
   {ok, Req, State}.
 
-websocket_terminate(_Reason, _Req, {_Config, Pid}) ->
-  lager:info("recon_web_handler1 terminate: Reason~p~n",[_Reason]),
+websocket_terminate(Reason, _Req, {_Config, Pid}) ->
+  lager:info("recon_web_handler1 terminate: Reason~p~n", [Reason]),
   recon_web_session:disconnect(Pid),
   ok;
-websocket_terminate(_Reason, _Req, State) ->
-  lager:info("recon_web_handler2 terminate: Reason~p~n,State~p~n",[_Reason, State]),
+websocket_terminate(Reason, _Req, State) ->
+  lager:info("recon_web_handler2 terminate: Reason~p~n,State~p~n", [Reason, State]),
   ok.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
