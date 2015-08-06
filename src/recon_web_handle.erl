@@ -33,6 +33,7 @@
   session_id, heartbeat_tref, pid = undefined}).
 
 %% @doc session tell handler has new message in session
+-spec notify_handler_have_new_message(pid(), pid()) -> ok.
 notify_handler_have_new_message(HanderPid, SessionPid) ->
   erlang:send(HanderPid, {message_arrived, SessionPid}).
 
