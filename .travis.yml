@@ -8,7 +8,7 @@ otp_release:
   - R16B02
   - R16B01
   - R16B
-script: "rm -rf deps ebin test/*.beam logs && ./rebar get-deps compile && ./rebar ct"
+script: "rm -rf deps ebin && ./rebar get-deps compile && ./rebar eunit"
 branches:
   only:
        - master
