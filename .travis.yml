@@ -1,0 +1,18 @@
+language: erlang
+otp_release:
+  - 17.3
+  - 17.1
+  - 17.0
+  - R16B03-1
+  - R16B03
+  - R16B02
+  - R16B01
+  - R16B
+script: "rm -rf deps ebin test/*.beam logs && ./rebar get-deps compile && ./rebar ct"
+branches:
+  only:
+       - master
+notifications:
+  email:
+      - 738819904@qq.com
+                                
