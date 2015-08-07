@@ -8,7 +8,7 @@ otp_release:
   - R16B02
   - R16B01
   - R16B
-script: "rm -rf deps ebin && ./rebar get-deps compile && ./rebar eunit"
+script: "rm -rf deps ebin && make deps && make && make eunit"
 branches:
   only:
        - master
