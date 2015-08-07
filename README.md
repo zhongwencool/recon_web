@@ -4,7 +4,8 @@
 
 A web tool using [recon](https://github.com/ferd/recon) to monitor erlang node staus. 
 
-![Build Status](https://travis-ci.org/zhongwencool/recon_web.png)
+[![Build Status](https://travis-ci.org/zhongwencool/recon_web.png)](https://travis-ci.org/zhongwencool/recon_web)
+
 
 [recon](https://github.com/ferd/recon), [cowboy websocket](https://github.com/ninenines/cowboy), [socket.io.client](https://github.com/socketio/socket.io-client),   [hightchat](http://www.highcharts.com/) 
 
@@ -29,7 +30,7 @@ A web tool using [recon](https://github.com/ferd/recon) to monitor erlang node s
 	$ `open http://127.0.0.1:8080/`
 	
 ----------
-###Config
+###Config
 
 * **Client** IP and PORT:
 
@@ -44,6 +45,7 @@ A web tool using [recon](https://github.com/ferd/recon) to monitor erlang node s
     {ip,{**"10,142,35,165"**}},%% default :localhost,better using nginx to proxypass
 
     {port,**8080**}]}
+    
 ----------  
 
 ###Some Userfull Command
