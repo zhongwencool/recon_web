@@ -14,7 +14,7 @@
   {modules,[]},
   {mod, { recon_web_app, []}},
   {env, [
-         %%{ip,{10,142,35,165}},%% default :localhost,better using nginx to proxypass
+         %%{ip,{"10,142,35,165"}},%% default :localhost,better using nginx to proxypass
          {port,8080}
         ]}
  ]}.
