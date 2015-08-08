@@ -12,7 +12,7 @@
                   cowboy
                  ]},
   {modules,[]},
-  {mod, { recon_web_app, []}},
+  {mod, {recon_web_app, []}},
   {env, [
     %%{ip,{"10,142,35,165"}},%% default :localhost,better using nginx to proxypass
 %% please keep no space before {ip,'127.0.0.1'} and {port,8080} :

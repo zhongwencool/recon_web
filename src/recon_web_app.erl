@@ -30,11 +30,14 @@ start(_Type, _Args) ->
                    {ip, {list_to_integer(IP1), list_to_integer(IP2), list_to_integer(IP3), list_to_integer(IP4)}}];
                _ -> [{port, Port}]
              end,
-  {ok, _T} = cowboy:start_http(http, 100, NetWorks,
+  {ok, _T} = cowboy:start_http(recon_web_http, 20, NetWorks,
     [{env, [{dispatch, Dispatch}]}]),
   lager:debug("Dispatch ok:~p~n", [{?MODULE, Dispatch}]),
   ?SESSION_MANAGER_ETS = ets:new(?SESSION_MANAGER_ETS, [public, named_table]),
   recon_web_sup:start_link().
 
 stop(_State) ->
+  lager:error("stop1"),
+  cowboy:stop_listener(recon_web_http),
+  lager:error("stop2"),
   ok.

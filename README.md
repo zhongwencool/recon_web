@@ -1,40 +1,40 @@
 
 -----------------
 ##recon_web
-
-A web tool using [recon](https://github.com/ferd/recon) to monitor erlang node staus. 
-
 [![Build Status](https://travis-ci.org/zhongwencool/recon_web.png)](https://travis-ci.org/zhongwencool/recon_web)
 
+A web tool using [recon](https://github.com/ferd/recon) to monitor erlang node status. 
+
+
+**Base on**
 
 [recon](https://github.com/ferd/recon), [cowboy websocket](https://github.com/ninenines/cowboy), [socket.io.client](https://github.com/socketio/socket.io-client),   [hightchat](http://www.highcharts.com/) 
 
 -----------------
 ###Demo
 
-  `open http://182.254.178.59:8080/`
+  $ [`open http://182.254.178.59:8080/`](http://182.254.178.59:8080/)
 
 ------------------
 ###Get Start:
 
-* Get deps and compile:
+* Get deps and compile && start in erlang shell mode:
 
-	$ `make`
+	$ `make && make shell`
+	$ [`open http://127.0.0.1:8080/`](http://127.0.0.1:8080/)
 
-* Start in erlang shell:
+* Combined with your system:
 
-	$ `make shell`    
-	
-* Result:
-
-	$ `open http://127.0.0.1:8080/`
+   1> application:start(recon_web).
+   
+   2> application:stop(recon_web).
 	
 ----------
 ###Config
 
 * **Recommend** using Line command 
 
-    $ `make config IP+=127.0.0.1 PORT+=8080`
+    $ `make config IP=127.0.0.1 PORT=8080`
     
 1. it will modify **Client** IP and PORT:
 
@@ -46,24 +46,23 @@ A web tool using [recon](https://github.com/ferd/recon) to monitor erlang node s
 
     /src/recon_web.app.src
 
-    {ip,{**"10,142,35,165"**}},%% default :localhost,better using nginx to proxypass
+    {ip,{**"127.0.0.1"**}},%% default :localhost,better using nginx to proxypass
 
     {port,**8080**}]}
     
 ----------  
 
-###Some Userfull Command
-* make help 
-* make clean_all clear all beam include deps beam
-* make debug    # start debug module lager:info
-* make remsh    # remsh mode shell
-* make restart  # restart node
-* make shell    # erl -pa ../recon_web/ebin deps/*/ebin
-* make start    # start a demon erlang node by heart
-* make stop     # stop erlang node normal
-* make config IP=+127.0.0.1 PORT+=8080
-* rake
+###Some Useful Command
 
-
-
+| Command                            | Action | 
+| ------------                       | ------------- 
+| make help                          | erlang.mk's help
+| make config IP=127.0.0.1 PORT=8080 | configure IP and Port  
+| make debug                         | compile && start debug shell mode lager:debug
+| make shell                         | start info shell mode lager:info
+| make start                         | start a demon erlang node by heart
+| make stop                          | stop erlang node
+| make clean_all                     | clean all beam (include deps beam)
+| make remsh                         | remsh mode shell
+| rake                               | 
 
