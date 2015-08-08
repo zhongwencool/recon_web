@@ -24,7 +24,10 @@ start(_Type, _Args) ->
     ]}]}]),
   {ok, Port} = application:get_env(port),
   NetWorks = case application:get_env(ip) of
-               {ok, IP} -> [{port, Port}, {ip, IP}];
+               {ok, IP} ->
+                 [IP1, IP2, IP3, IP4] = string:tokens(IP, "."),
+                 [{port, Port},
+                   {ip, {list_to_integer(IP1), list_to_integer(IP2), list_to_integer(IP3), list_to_integer(IP4)}}];
                _ -> [{port, Port}]
              end,
   {ok, _T} = cowboy:start_http(http, 100, NetWorks,

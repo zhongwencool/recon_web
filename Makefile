@@ -29,3 +29,36 @@ clean_all:
 	done; \
 	make clean
 	@echo "clean_all done"
+
+.PHONY: config
+
+IP+=127.0.0.1
+PORT+=8080
+
+config:
+	@echo "Setting IP:$(IP) PORT:$(PORT)"
+	perl -p -i -e "s/^var HostPort .*/var HostPort = \'http:\/\/$(IP):$(PORT)\';/g" ./priv/js/recon_web.js
+	perl -p -i -e "s/^{ip,.*/{ip, \"$(IP)\"},/g" ./src/recon_web.app.src
+	perl -p -i -e "s/^{port,.*/{port, $(PORT)}/g" ./src/recon_web.app.src
+	@echo "Done"
+
+.PHONY: start
+start:
+	erl -heart -env HEART_COMMAND 'rake restart' -sname zhongwencool -setcookie zhongwencool -pa `pwd`/ebin deps/*/ebin -detached -noinput -noshell -s recon_web
+
+.PHONY: stop
+stop:
+	erl -noshell -sname temp_control -setcookie zhongwencool -eval \"rpc:call\(zhongwencool@localhost, init, stop, \[\]\)\" -s init stop
+
+.PHONY: restart
+restart: stop restart
+
+.PHONY: debug
+debug:
+	rebar co&& exec erl -sname zhongwencool -setcookie zhongwencool -pa `pwd`/ebin deps/*/ebin -boot start_sasl -s recon_web start debug
+
+.PHONY: remsh
+remsh:
+	erl -setcookie zhongwencool -remsh zhongwencool@localhost -sname remsh_tmp
+
+

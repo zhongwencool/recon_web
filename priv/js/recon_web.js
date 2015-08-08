@@ -35,7 +35,8 @@ var alloc_allocated_instances = {};
 var cache_hit = {};
 
 // replace the url for  yourself
-var socket =  io.connect('http://127.0.0.1:8080'); 
+var HostPort = 'http://127.0.0.1:8080';
+var socket =  io.connect(HostPort);
 socket.on('connect', function() {
     output('<span class="connect-msg">Client has connected to the server!</span>','');
 });

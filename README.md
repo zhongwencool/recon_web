@@ -32,13 +32,17 @@ A web tool using [recon](https://github.com/ferd/recon) to monitor erlang node s
 ----------
 ###Config
 
-* **Client** IP and PORT:
+* **Recommend** using Line command 
+
+    $ `make config IP+=127.0.0.1 PORT+=8080`
+    
+1. it will modify **Client** IP and PORT:
 
     /priv/js/recon_web.js
 
 	var socket =  io.connect(**'http://yourhost:yourport'**);
 
-* **Server** IP and PORT:
+2. it will modify **Server** IP and PORT:
 
     /src/recon_web.app.src
 
@@ -50,7 +54,13 @@ A web tool using [recon](https://github.com/ferd/recon) to monitor erlang node s
 
 ###Some Userfull Command
 * make help 
-* make clean_all
+* make clean_all clear all beam include deps beam
+* make debug    # start debug module lager:info
+* make remsh    # remsh mode shell
+* make restart  # restart node
+* make shell    # erl -pa ../recon_web/ebin deps/*/ebin
+* make start    # start a demon erlang node by heart
+* make stop     # stop erlang node normal
 * rake
 
 
