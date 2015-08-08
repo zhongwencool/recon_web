@@ -61,6 +61,7 @@ A web tool using [recon](https://github.com/ferd/recon) to monitor erlang node s
 * make shell    # erl -pa ../recon_web/ebin deps/*/ebin
 * make start    # start a demon erlang node by heart
 * make stop     # stop erlang node normal
+* make config IP=+127.0.0.1 PORT+=8080
 * rake
 
 

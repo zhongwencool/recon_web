@@ -38,7 +38,7 @@ PORT+=8080
 config:
 	@echo "Setting IP:$(IP) PORT:$(PORT)"
 	perl -p -i -e "s/^var HostPort .*/var HostPort = \'http:\/\/$(IP):$(PORT)\';/g" ./priv/js/recon_web.js
-	perl -p -i -e "s/^{ip,.*/{ip, \"$(IP)\"},/g" ./src/recon_web.app.src
+	#perl -p -i -e "s/^{ip,.*/{ip, \"$(IP)\"},/g" ./src/recon_web.app.src
 	perl -p -i -e "s/^{port,.*/{port, $(PORT)}/g" ./src/recon_web.app.src
 	@echo "Done"
 

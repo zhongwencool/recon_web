@@ -17,7 +17,7 @@
     %%{ip,{"10,142,35,165"}},%% default :localhost,better using nginx to proxypass
 %% please keep no space before {ip,'127.0.0.1'} and {port,8080} :
 %% your should use line command  `make config IP+=127.0.0.1 PORT+=8080`
-{ip, "127.0.0.1"},
+%%{ip, "127.0.0.1"},
 {port, 8080}
   ]}
  ]}.
