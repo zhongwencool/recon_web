@@ -66,3 +66,6 @@ A web tool using [recon](https://github.com/ferd/recon) to monitor erlang node s
 | make remsh                         | remsh mode shell
 | rake                               | 
 
+-------------------
+###Flow
+![pic](http://7xi3w8.com1.z0.glb.clouddn.com/recon_web_flow949_561.jpg)

@@ -37,7 +37,5 @@ start(_Type, _Args) ->
   recon_web_sup:start_link().
 
 stop(_State) ->
-  lager:error("stop1"),
   cowboy:stop_listener(recon_web_http),
-  lager:error("stop2"),
   ok.
