@@ -10,11 +10,6 @@ A web tool using [recon](https://github.com/ferd/recon) to monitor erlang node s
 
 [recon](https://github.com/ferd/recon), [cowboy websocket](https://github.com/ninenines/cowboy), [socket.io.client](https://github.com/socketio/socket.io-client),   [hightchat](http://www.highcharts.com/) 
 
------------------
-###Demo
-
-  $ [`open http://182.254.178.59:8080/`](http://182.254.178.59:8080/)
-
 ------------------
 ###Get Start:
 
@@ -25,7 +20,7 @@ A web tool using [recon](https://github.com/ferd/recon) to monitor erlang node s
 
 * Combined with your system:
 
-   1> application:start(recon_web).
+   1> application:ensure_all_started(recon_web).
    
    2> application:stop(recon_web).
 	
