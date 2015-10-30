@@ -12,7 +12,15 @@ A web tool using [recon](https://github.com/ferd/recon) to monitor erlang node s
 
 --------------------
 ##Demo
+### in the shell
+
+>`recon_web:top()`
+
 ![pic](http://7fveua.com1.z0.glb.clouddn.com/erlang_shell.jpg)
+
+### the web view is also very elegant.
+ 
+$ [`open http://127.0.0.1:8080/`](http://127.0.0.1:8080/)
 
 ------------------
 ###Get Start:
