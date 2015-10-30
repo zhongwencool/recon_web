@@ -10,6 +10,10 @@ A web tool using [recon](https://github.com/ferd/recon) to monitor erlang node s
 
 [recon](https://github.com/ferd/recon), [cowboy websocket](https://github.com/ninenines/cowboy), [socket.io.client](https://github.com/socketio/socket.io-client),   [hightchat](http://www.highcharts.com/) 
 
+--------------------
+##Demo
+![pic](http://7fveua.com1.z0.glb.clouddn.com/erlang_shell.jpg)
+
 ------------------
 ###Get Start:
 
