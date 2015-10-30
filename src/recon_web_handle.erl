@@ -44,7 +44,6 @@ notify_handler_have_new_message(HanderPid, SessionPid) ->
 init({_, http}, Req, [Config]) ->
   {Method, _} = cowboy_req:method(Req),
   {PathInfo, _} = cowboy_req:path_info(Req),
-  lager:debug("+++++ PathInfo:~p~n", [PathInfo]),
   init_by_method(Method, PathInfo, Config, Req).
 
 %%1) http://127.0.0.1:8080/socket.io/1/?t=1436608179209
@@ -215,7 +214,7 @@ websocket_terminate(Reason, _Req, {_Config, Pid}) ->
   recon_web_session:disconnect(Pid),
   ok;
 websocket_terminate(Reason, _Req, State) ->
-  lager:info("recon_web_handler2 terminate: Reason~p~n,State~p~n", [Reason, State]),
+  lager:info("recon_web_handler2 terminate: Reason~p~n, State~p~n", [Reason, State]),
   ok.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

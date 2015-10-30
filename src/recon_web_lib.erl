@@ -4,6 +4,8 @@
     port_to_binary/1, urlencode_port/1]).
 -export([to_atom_or_binary/1, pid_or_port_to_binary/1]).
 
+-export([pid_to_display/1]).
+
 pid_to_binary(Pid) ->
     list_to_binary(pid_to_list(Pid)).
 
@@ -27,13 +29,16 @@ pid_or_port_to_binary(Controller) when is_pid(Controller) ->
 pid_or_port_to_binary(Controller) ->
     erlang:list_to_binary(erlang:port_to_list(Controller)).
 
+pid_to_display(List) ->
+  [begin
+     NewName = case is_atom(Name) of
+                 false ->
+                   erlang:list_to_binary((erlang:pid_to_list(Pid) -- "<") -- ">"); %% not registerd
+                 true -> erlang:atom_to_binary(Name, utf8)
+               end,
+     {NewName, Count} end||{Pid, Count, [Name|_]} <- List].
 
-%%
-
-%%========================================
-%% Internal
-%%========================================
-
-
+port_to_display(Port) ->
+  erlang:list_to_binary(((erlang:port_to_list(Port) -- "#") -- "<") -- ">"). %%#Port<0.5639>
 
 

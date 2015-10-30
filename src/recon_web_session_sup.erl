@@ -21,7 +21,7 @@ init([]) ->
 %%the child specification defined in Module:init/1
 %%will be used and ChildSpec should instead be an arbitrary list of terms List.
 %%The child process will then be started by appending List to the existing start function
-%%arguments, i.e. by calling apply(M, F, A++List) where {M,F,A}
+%%arguments, i.e. by calling apply(M, F, A ++ List) where {M, F, A}
 %%is the start function defined in the child specification.
 start_child(SessionId, SessionTimeout, Opts) ->
     supervisor:start_child(?MODULE, [SessionId, SessionTimeout, Opts]).
