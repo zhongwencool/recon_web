@@ -4,7 +4,7 @@
     port_to_binary/1, urlencode_port/1]).
 -export([to_atom_or_binary/1, pid_or_port_to_binary/1]).
 
--export([pid_to_display/1]).
+-export([pid_to_display/1,port_to_display/1]).
 
 pid_to_binary(Pid) ->
     list_to_binary(pid_to_list(Pid)).
