@@ -270,7 +270,7 @@ to_list(Float) when is_float(Float)->
   Integer = Val div 100,
   Decmial = Val - Integer * 100,
   case Integer of
-    100 -> "100.00";
+    100 -> "100.0";
     _ -> lists:flatten(io_lib:format("~2..0w.~2..0w", [Integer, Decmial]))
   end;
 to_list(Val) -> Val.
