@@ -4,7 +4,7 @@
 -export([top/1]).
 -export([loop/1]).
 
--define(DEFAULT_RANK_NUM, 20).
+-define(DEFAULT_RANK_NUM, 20). %%fill full in 13.3 inch screen(24 core)
 -define(MIN_REFLUSH_INTERAL, 2000).
 -define(CPU_ALARM_THRESHOLD, 0.8).
 
@@ -269,7 +269,10 @@ to_list(Float) when is_float(Float)->
   Val = trunc(Float*10000),
   Integer = Val div 100,
   Decmial = Val - Integer * 100,
-  lists:flatten(io_lib:format("~2..0w.~2..0w", [Integer, Decmial]));
+  case Integer of
+    100 -> "100.00";
+    _ -> lists:flatten(io_lib:format("~2..0w.~2..0w", [Integer, Decmial]))
+  end;
 to_list(Val) -> Val.
 
 uptime(UpTime) ->
