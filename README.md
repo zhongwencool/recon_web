@@ -23,6 +23,10 @@ A web tool using [recon](https://github.com/ferd/recon) to monitor erlang node s
 $ [`open http://127.0.0.1:8080/`](http://127.0.0.1:8080/)
 
 ------------------
+#DEMO
+[Demo](http://23.88.59.186:8080/)
+
+------------------
 ###Get Start:
 
 * Get deps and compile && start in erlang shell mode:
