@@ -162,7 +162,7 @@ websocket_info(post_init, Req, {Config}) ->
       self() ! {go, Sid},
       erlang:start_timer(Config#config.heartbeat, self(), {?MODULE, Pid}),
       {ok, Req, {Config, Pid}};
-    {error, not_found} -> {shutdown, {Config, undefined}}
+    {error, not_found} -> {shutdown, Req, {Config, undefined}}
   end;
 
 websocket_info({go, Sid}, Req, {Config, Pid}) ->
